@@ -137,7 +137,7 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
             super(view);
 
             nameTextView = view.findViewById(com.mavroo.dialer.R.id.item_call_log_caller);
-            numberTextView = view.findViewById(com.mavroo.dialer.R.id.item_call_log_content);
+            numberTextView = view.findViewById(com.mavroo.dialer.R.id.item_call_log_content_text);
             dateTextView = view.findViewById(com.mavroo.dialer.R.id.item_call_log_date);
             photoImageView = view.findViewById(com.mavroo.dialer.R.id.item_call_log_photo);
         }

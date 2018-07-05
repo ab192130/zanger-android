@@ -6,7 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="8dp">
+    android:clipToPadding="false"
+    android:paddingTop="8dp"
+    android:paddingBottom="3dp">
 
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/item_call_log_photo"
@@ -36,23 +38,37 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="4dp" />
 
-    <TextView
+    <android.support.v7.widget.CardView
         android:id="@+id/item_call_log_content"
-        android:text="hi man, how are you?"
-        android:background="@drawable/shape_item_call_log_new_out"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxWidth="240dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
         android:layout_marginTop="4dp"
+        android:layout_marginRight="8dp"
+
+        android:maxWidth="240dp"
+        app:cardBackgroundColor="@color/colorOne"
+
         app:layout_constraintTop_toBottomOf="@+id/item_call_log_caller"
         app:layout_constraintRight_toLeftOf="@+id/item_call_log_photo"
-        android:layout_marginRight="8dp" />
+
+        android:elevation="12dp"
+        app:cardCornerRadius="20dp"
+        android:layout_centerHorizontal="true"
+        android:innerRadius="0dp"
+        android:shape="ring"
+        android:thicknessRatio="1.9" >
+        <TextView
+            android:id="@+id/item_call_log_content_text"
+            android:text="hi man, how are you?"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+    </android.support.v7.widget.CardView>
 
     <TextView
         android:id="@+id/item_call_log_date"
