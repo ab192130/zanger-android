@@ -76,7 +76,7 @@
                 android:id="@+id/item_call_log_target_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="hi man, how are you?"
+                android:text="John Doe"
                 android:layout_gravity="center_vertical"
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
@@ -93,7 +93,7 @@
                 android:layout_marginLeft="8dp"
                 android:contentDescription="@string/item_call_log_photo"
 
-                android:src="@mipmap/ic_launcher_round"/>
+                android:src="@drawable/image_placeholder_face"/>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
