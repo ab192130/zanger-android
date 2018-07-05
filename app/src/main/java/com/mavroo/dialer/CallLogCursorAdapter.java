@@ -67,21 +67,31 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
         if(!mCursor.moveToPosition(position))
             return;
 
-        String number = mCursor.getString(mCursor.getColumnIndex(CallLog.Calls.NUMBER));
+        String number   = mCursor.getString(mCursor.getColumnIndex(CallLog.Calls.NUMBER));
         String duration = mCursor.getString(mCursor.getColumnIndex(CallLog.Calls.DURATION));
-        String date = mCursor.getString(mCursor.getColumnIndex(CallLog.Calls.DATE));
-        String type = mCursor.getString(mCursor.getColumnIndex(CallLog.Calls.TYPE));
-        date = DateHelper.getInstance().getDateString(Long.valueOf(date));
+        String date     = mCursor.getString(mCursor.getColumnIndex(CallLog.Calls.DATE));
+        int    type     = mCursor.getInt(mCursor.getColumnIndex(CallLog.Calls.TYPE));
+        date            = DateHelper.getInstance().getDateString(Long.valueOf(date));
 
         final Cursor contactCursor = ContactHelper.getByPhoneNumber(mContext, number);
 
         // defaults
-        holder.nameTextView.setText(com.mavroo.dialer.R.string.item_call_log_caller_unknown);
+        //holder.nameTextView.setText(R.string.item_call_log_caller_unknown);
 
         number = phoneNumberManager.format(number);
 
-        holder.numberTextView.setText(number);
+        if(holder.photoImageView != null)
         holder.photoImageView.setImageResource(R.drawable.image_placeholder_face);
+
+        switch (type) {
+            case 2: // outgoing, sent
+                holder.targetTextView.setText(number);
+                break;
+
+            default: // incoming, received
+                holder.actorTextView.setText(number);
+                break;
+        }
 
         if(CallLogHelper.hasLogs(contactCursor)) {
             // from contact data
@@ -94,13 +104,24 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
                     String contactPhoto = contactCursor.getString(contactCursor
                             .getColumnIndex(ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI));
 
-                    holder.nameTextView.setText(contactName);
+                    //holder.numberTextView.setText(contactName);
                     // holder.numberTextView.setText(phoneNumberManager.format(number));
 
-                    if(contactPhoto != null && !contactPhoto.equals("")) {
+                    switch (type) {
+                        case 2: // outgoing, sent
+                            holder.targetTextView.setText(contactName);
+                            break;
+
+                        default: // incoming, received
+                            holder.actorTextView.setText(contactName);
+                            break;
+                    }
+
+                    if(holder.photoImageView != null && contactPhoto != null && !contactPhoto.equals("")) {
                         holder.photoImageView.setImageURI(Uri.parse(contactPhoto));
                     }
 
+                    if(holder.photoImageView != null)
                     holder.photoImageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -110,10 +131,10 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
                 }
             } finally {
 
-            /*if(position == mCursor.getCount() - 1) {
-                onBottomReachedListener.onBottomReached(position);
-            } else
-                onBottomReachedListener.onBottomNotReached(position);*/
+                /*if(position == mCursor.getCount() - 1) {
+                    onBottomReachedListener.onBottomReached(position);
+                } else
+                    onBottomReachedListener.onBottomNotReached(position);*/
 
                 contactCursor.close();
             }
@@ -128,18 +149,18 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
     }
 
     class CallLogViewHolder extends RecyclerView.ViewHolder{
-        TextView nameTextView;
-        TextView numberTextView;
+        TextView actorTextView;
+        TextView targetTextView;
         TextView dateTextView;
         ImageView photoImageView;
 
         CallLogViewHolder(View view) {
             super(view);
 
-            nameTextView = view.findViewById(com.mavroo.dialer.R.id.item_call_log_caller);
-            numberTextView = view.findViewById(com.mavroo.dialer.R.id.item_call_log_content_text);
-            dateTextView = view.findViewById(com.mavroo.dialer.R.id.item_call_log_date);
-            photoImageView = view.findViewById(com.mavroo.dialer.R.id.item_call_log_photo);
+            actorTextView  = view.findViewById(R.id.item_call_log_actor);
+            targetTextView = view.findViewById(R.id.item_call_log_target_text);
+            dateTextView   = view.findViewById(R.id.item_call_log_date);
+            photoImageView = view.findViewById(R.id.item_call_log_photo);
         }
     }
 

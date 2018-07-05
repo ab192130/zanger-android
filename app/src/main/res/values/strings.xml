@@ -20,7 +20,7 @@
     <string name="item_call_log_caller_unknown">Unknown</string>
     <string name="dial_pad_backspace"><![CDATA[<]]></string>
     <string name="dial_pad_clean">X</string>
-    <string name="dial_pad_call_hint">call</string>
+    <string name="dial_pad_call_hint">dial number</string>
     <string name="edit_text_dial_num_hint">dial and call…</string>
     <string name="item_call_log_date_text">03:12</string>
     <string name="item_call_log_content_text">hi man, how are you?</string>
