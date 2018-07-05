@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Zanger</string>
+    <string name="bottom_sheet_peek">sheet_peek</string>
+    <string name="bottom_sheet_content">sheet_content</string>
+    <string name="dial_num_one">1</string>
+    <string name="dial_num_two">2</string>
+    <string name="dial_num_three">3</string>
+    <string name="dial_num_four">4</string>
+    <string name="dial_num_five">5</string>
+    <string name="dial_num_six">6</string>
+    <string name="dial_num_seven">7</string>
+    <string name="dial_num_eight">8</string>
+    <string name="dial_num_nine">9</string>
+    <string name="dial_num_sheet">#</string>
+    <string name="dial_num_zero">0</string>
+    <string name="dial_num_ulduz">*</string>
+    <string name="dial_pad_call">call</string>
+    <string name="dial_clear">clear</string>
+    <string name="item_call_log_photo">Caller photo</string>
+    <string name="item_call_log_caller_unknown">Unknown</string>
+    <string name="dial_pad_backspace"><![CDATA[<]]></string>
+    <string name="dial_pad_clean">X</string>
+    <string name="dial_pad_call_hint">call</string>
+    <string name="edit_text_dial_num_hint">dial and call…</string>
+    <string name="item_call_log_date_text">03:12</string>
+    <string name="item_call_log_content_text">hi man, how are you?</string>
+    <string name="text_call_log_no_result">oh! you\'re asocial :(</string>
+</resources>

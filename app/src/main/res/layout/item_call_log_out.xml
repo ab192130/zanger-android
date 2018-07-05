@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="8dp">
+
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/item_call_log_photo"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        app:civ_border="false"
+        android:layout_weight="1"
+        android:contentDescription="@string/item_call_log_photo"
+
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="20dp"
+
+        android:src="@mipmap/ic_launcher_round"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:id="@+id/item_call_log_caller"
+        android:text="John Doe"
+        android:textColor="@android:color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        app:layout_constraintRight_toLeftOf="@+id/item_call_log_photo"
+        android:layout_marginRight="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="4dp" />
+
+    <TextView
+        android:id="@+id/item_call_log_content"
+        android:text="hi man, how are you?"
+        android:background="@drawable/shape_item_call_log_new_out"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="240dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@+id/item_call_log_caller"
+        app:layout_constraintRight_toLeftOf="@+id/item_call_log_photo"
+        android:layout_marginRight="8dp" />
+
+    <TextView
+        android:id="@+id/item_call_log_date"
+        android:text="11:40"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        app:layout_constraintRight_toLeftOf="@+id/item_call_log_content"
+        android:layout_marginStart="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/item_call_log_content" />
+
+</android.support.constraint.ConstraintLayout>
