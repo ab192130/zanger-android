@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -42,6 +43,7 @@ class DialpadManager {
     private BottomSheetBehavior dialpadSheet;
     private ImageButton buttonDialClear;
     private EditText editTextDialpadCall;
+    private TextView textContactDataShort;
     private ImageView imageViewDialpadFace;
     private ImageView imageIconDialCallButton;
     private LinearLayout dialpadLayout;
@@ -77,6 +79,7 @@ class DialpadManager {
         buttonDialClear = mActivity.findViewById(R.id.dial_clear);
         buttonDialNumZero = mActivity.findViewById(R.id.dial_num_zero);
         buttonAction = mActivity.findViewById(R.id.dial_button_action);
+        textContactDataShort = mActivity.findViewById(R.id.text_contact_data_short);
         editTextDialNum = mActivity.findViewById(R.id.edit_text_dial_num);
         editTextDialpadCall = mActivity.findViewById(R.id.dial_pad_call);
         imageViewDialpadFace = mActivity.findViewById(R.id.dial_image_face);
@@ -267,6 +270,9 @@ class DialpadManager {
         editTextDialNum.setText("");
         editTextDialNum.setFocusable(false);
 
+        textContactDataShort.setText("");
+        textContactDataShort.setVisibility(View.INVISIBLE);
+
         setDialNumber(resetFormatting(getDialNumber()));
     }
 
@@ -296,6 +302,9 @@ class DialpadManager {
                 formatDialNumber();
 
                 editTextDialNum.setText(contactName);
+
+                textContactDataShort.setText(contactName);
+                textContactDataShort.setVisibility(View.VISIBLE);
             } else {
                 resetDefaultContactData();
             }
