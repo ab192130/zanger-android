@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdapter.CallLogViewHolder> {
+
     private Cursor mCursor;
     private Context mContext;
     private CallLogHelper callLogHelper;
@@ -38,7 +39,11 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
 
         int type = mCursor.getInt(mCursor.getColumnIndex(CallLog.Calls.TYPE));
         //...
-        return type;
+
+        if(type == CallLog.Calls.OUTGOING_TYPE)
+            return VIEWTYPE_OUTGOING;
+
+        return VIEWTYPE_INCOMING;
     }
 
     @NonNull
@@ -49,7 +54,7 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
 
         switch (viewType) {
-            case 2: // outgoing, sent
+            case VIEWTYPE_OUTGOING: // outgoing, sent
                 itemView = layoutInflater
                         .inflate(com.mavroo.dialer.R.layout.item_call_log_out, parent, false);
                 break;
@@ -83,13 +88,29 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
         if(holder.photoImageView != null)
         holder.photoImageView.setImageResource(R.drawable.image_placeholder_face);
 
-        switch (type) {
-            case 2: // outgoing, sent
+        switch (holder.getItemViewType()) {
+            case VIEWTYPE_OUTGOING: //right
                 holder.targetTextView.setText(number);
+                holder.typeImageView.setImageResource(R.drawable.image_call_log_out);
                 break;
 
-            default: // incoming, received
+            default: //left
+
                 holder.actorTextView.setText(number);
+
+                switch (type){
+                    case CallLog.Calls.MISSED_TYPE:
+                        holder.typeImageView.setImageResource(R.drawable.image_call_log_missed);
+
+                        holder.targetTextView.setText("couldn't reach you");
+                        holder.targetTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_dark));
+                        break;
+
+                    default:
+                        holder.typeImageView.setImageResource(R.drawable.image_call_log_in);
+                        break;
+
+                }
                 break;
         }
 
@@ -104,11 +125,8 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
                     String contactPhoto = contactCursor.getString(contactCursor
                             .getColumnIndex(ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI));
 
-                    //holder.numberTextView.setText(contactName);
-                    // holder.numberTextView.setText(phoneNumberManager.format(number));
-
                     switch (type) {
-                        case 2: // outgoing, sent
+                        case CallLog.Calls.OUTGOING_TYPE: // outgoing, sent
                             holder.targetTextView.setText(contactName);
                             break;
 
@@ -149,6 +167,7 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
     }
 
     class CallLogViewHolder extends RecyclerView.ViewHolder{
+        ImageView typeImageView;
         TextView actorTextView;
         TextView targetTextView;
         TextView dateTextView;
@@ -161,6 +180,7 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
             targetTextView = view.findViewById(R.id.item_call_log_target_text);
             dateTextView   = view.findViewById(R.id.item_call_log_date);
             photoImageView = view.findViewById(R.id.item_call_log_photo);
+            typeImageView = view.findViewById(R.id.item_call_log_type_image);
         }
     }
 

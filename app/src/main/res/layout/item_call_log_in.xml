@@ -70,17 +70,18 @@
             android:paddingTop="8dp">
 
             <ImageView
-                android:layout_width="10dp"
+                android:id="@id/item_call_log_type_image"
+                android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/image_call_log_out" />
+                android:src="@drawable/image_call_log_in" />
 
             <TextView
                 android:id="@+id/item_call_log_target_text"
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="8dp"
                 android:text="called you"
 
                 android:textSize="14sp" />

@@ -16,7 +16,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -44,6 +43,7 @@ class DialpadManager {
     private ImageButton buttonDialClear;
     private EditText editTextDialpadCall;
     private ImageView imageViewDialpadFace;
+    private ImageView imageIconDialCallButton;
     private LinearLayout dialpadLayout;
     private Button buttonDialNumZero;
     private PhoneNumberUtil phoneUtil;
@@ -68,18 +68,19 @@ class DialpadManager {
     private void initDialpad() {
         numberDial = "";
 
-        dialpadLayout = mActivity.findViewById(com.mavroo.dialer.R.id.bottom_sheet);
+        dialpadLayout = mActivity.findViewById(R.id.bottom_sheet);
         dialpadSheet = BottomSheetBehavior.from(dialpadLayout);
         dialpadSheet.setHideable(false);
         phoneNumberManager = new PhoneNumberManager();
         vibrator = (Vibrator) mContext.getSystemService(mContext.VIBRATOR_SERVICE);
 
-        buttonDialClear = mActivity.findViewById(com.mavroo.dialer.R.id.dial_clear);
-        buttonDialNumZero = mActivity.findViewById(com.mavroo.dialer.R.id.dial_num_zero);
-        buttonAction = mActivity.findViewById(com.mavroo.dialer.R.id.dial_button_action);
-        editTextDialNum = mActivity.findViewById(com.mavroo.dialer.R.id.edit_text_dial_num);
-        editTextDialpadCall = mActivity.findViewById(com.mavroo.dialer.R.id.dial_pad_call);
-        imageViewDialpadFace = mActivity.findViewById(com.mavroo.dialer.R.id.dial_image_face);
+        buttonDialClear = mActivity.findViewById(R.id.dial_clear);
+        buttonDialNumZero = mActivity.findViewById(R.id.dial_num_zero);
+        buttonAction = mActivity.findViewById(R.id.dial_button_action);
+        editTextDialNum = mActivity.findViewById(R.id.edit_text_dial_num);
+        editTextDialpadCall = mActivity.findViewById(R.id.dial_pad_call);
+        imageViewDialpadFace = mActivity.findViewById(R.id.dial_image_face);
+        imageIconDialCallButton = mActivity.findViewById(R.id.dial_call_button_icon);
 
         //phoneFormat = new PhoneFormat("az" ,mContext);
         phoneUtil = PhoneNumberUtil.getInstance();
@@ -214,7 +215,13 @@ class DialpadManager {
 
     private void cancelDialNumber() {
         editTextDialpadCall.setText("");
+        resetCallActionType();
+
         resetDefaultContactData();
+    }
+
+    private void resetCallActionType() {
+        imageIconDialCallButton.setImageResource(R.drawable.image_icon_phone_white);
     }
 
     private String getDialNumber() {
@@ -234,7 +241,7 @@ class DialpadManager {
         numberDial = newNumber;
         setDialNumber(newNumber);
 
-        previewNumberContact();
+        previewNumber();
     }
 
     private String resetFormatting(String number) {
@@ -248,7 +255,7 @@ class DialpadManager {
         numberDial = numberDial + number;
         editTextDialpadCall.append(number);
 
-        previewNumberContact();
+        previewNumber();
     }
 
     private void resetDefaultContactImage() {
@@ -263,9 +270,15 @@ class DialpadManager {
         setDialNumber(resetFormatting(getDialNumber()));
     }
 
-    private void previewNumberContact() {
+    private void previewNumber() {
         if (getDialNumber().equals(""))
             return;
+
+        if (phoneNumberManager.isRunnable(getDialNumber())) {
+            showRunnableActionType();
+        } else {
+            resetCallActionType();
+        }
 
         try (Cursor cursorContact = ContactHelper.getByPhoneNumber(mContext, getDialNumber())) {
             if (cursorContact.moveToFirst()) {
@@ -287,6 +300,10 @@ class DialpadManager {
                 resetDefaultContactData();
             }
         }
+    }
+
+    private void showRunnableActionType() {
+        imageIconDialCallButton.setImageResource(R.drawable.image_media_play);
     }
 
     private void formatDialNumber() {
@@ -321,13 +338,8 @@ class DialpadManager {
             return;
         }
 
-        boolean isRunnable = phoneNumberManager.isRunnable(number);
-        Log.e("MYAPP:RUNNABLE", number + " is " + String.valueOf(isRunnable));
-        Log.e("MYAPP:PARSED", String.valueOf(Uri.encode("#")));
-
-        if(isRunnable) {
-            number = StringManager.removeLastChar(number) + Uri.encode("#");
-            Log.e("MYAPP:NUMBER", number);
+        if(phoneNumberManager.isRunnable(number)) {
+            number = number.replace("#", Uri.encode("#"));
         }
 
         Intent intent = new Intent(Intent.ACTION_CALL);
