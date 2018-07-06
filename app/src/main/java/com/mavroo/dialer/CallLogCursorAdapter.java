@@ -102,11 +102,12 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
                     case CallLog.Calls.MISSED_TYPE:
                         holder.typeImageView.setImageResource(R.drawable.image_call_log_missed);
 
-                        holder.targetTextView.setText("couldn't reach you");
+                        holder.targetTextView.setText(R.string.call_log_action_missed);
                         holder.targetTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_dark));
                         break;
 
                     default:
+                        holder.targetTextView.setText(R.string.call_log_action_incoming);
                         holder.typeImageView.setImageResource(R.drawable.image_call_log_in);
                         break;
 

@@ -25,4 +25,6 @@
     <string name="item_call_log_content_text">hi man, how are you?</string>
     <string name="text_call_log_no_result">oh! you\'re asocial :(</string>
     <string name="item_call_log_date_text_default">03:12</string>
+    <string name="call_log_action_incoming">called you</string>
+    <string name="call_log_action_missed">couldn\'t reach you</string>
 </resources>
