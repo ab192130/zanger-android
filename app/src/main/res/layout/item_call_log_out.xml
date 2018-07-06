@@ -99,13 +99,13 @@
 
     <TextView
         android:id="@+id/item_call_log_date"
-        android:text="11:40"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="2dp"
+        android:text="@string/item_call_log_date_text_default"
         android:textSize="10sp"
-        app:layout_constraintRight_toLeftOf="@+id/item_call_log_content"
-        android:layout_marginStart="4dp"
-        app:layout_constraintBottom_toBottomOf="@+id/item_call_log_content" />
+        app:layout_constraintBottom_toBottomOf="@+id/item_call_log_content"
+        app:layout_constraintRight_toLeftOf="@+id/item_call_log_content" />
 
     <LinearLayout
         android:id="@+id/item_call_log_type"
