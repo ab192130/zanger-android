@@ -81,47 +81,48 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
 
         final Cursor contactCursor = ContactHelper.getByPhoneNumber(mContext, number);
 
-        number = phoneNumberManager.format(number);
+        //number = phoneNumberManager.format(number);
 
         holder.setDataOnView(position, number, duration, date, type);
 
-        if(CallLogHelper.hasLogs(contactCursor)) {
-            // from contact data
-            try {
-                if(contactCursor.moveToFirst()) {
-                    final String contactKey = contactCursor.getString(contactCursor
-                            .getColumnIndex(ContactsContract.PhoneLookup.LOOKUP_KEY));
-                    final String contactName = contactCursor.getString(contactCursor
-                            .getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
-                    String contactPhoto = contactCursor.getString(contactCursor
-                            .getColumnIndex(ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI));
+        if(!CallLogHelper.hasLogs(contactCursor)) {
 
-                    holder.setContactData(contactKey, contactName, contactPhoto);
+            holder.hasContact   = false;
+            holder.contactKey   = null;
+            holder.contactName  = null;
+            holder.contactPhoto = null;
+            holder.photoImageView.setOnClickListener(null);
 
-                    // if(holder.photoImageView != null && contactPhoto != null && !contactPhoto.equals("")) {
-                    //     holder.photoImageView.setImageURI(Uri.parse(contactPhoto));
-                    // }
-
-                     /*if(holder.photoImageView != null)
-                     holder.photoImageView.setOnClickListener(new View.OnClickListener() {
-                         @Override
-                         public void onClick(View v) {
-                             CallLogHelper.showContact(mContext, contactKey);
-                         }
-                     });*/
-                }
-            } finally {
-
-                // if(position == mCursor.getCount() - 1) {
-                //     onBottomReachedListener.onBottomReached(position);
-                // } else
-                //     onBottomReachedListener.onBottomNotReached(position);
-
-                contactCursor.close();
-            }
+            return;
         }
 
-        //holder.dateTextView.setText(date);
+        // from contact data
+        try {
+            if(!contactCursor.moveToFirst()) {
+                return;
+            }
+
+            final String contactKey = contactCursor.getString(contactCursor
+                    .getColumnIndex(ContactsContract.PhoneLookup.LOOKUP_KEY));
+            final String contactName = contactCursor.getString(contactCursor
+                    .getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+            String contactPhoto = contactCursor.getString(contactCursor
+                    .getColumnIndex(ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI));
+
+            holder.hasContact = true;
+            holder.contactKey = contactKey;
+            holder.contactName = contactName;
+            holder.contactPhoto = contactPhoto;
+            holder.setContactData();
+        } finally {
+
+            // if(position == mCursor.getCount() - 1) {
+            //     onBottomReachedListener.onBottomReached(position);
+            // } else
+            //     onBottomReachedListener.onBottomNotReached(position);
+
+            contactCursor.close();
+        }
     }
 
     @Override
@@ -137,6 +138,9 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
         TextView  dateTextView;
         ImageView photoImageView;
 
+        String    number;
+
+        boolean   hasContact;
         String    contactKey;
         String    contactName;
         String    contactPhoto;
@@ -152,32 +156,32 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
         }
 
         public void setDataOnView(int position, String number, String duration, String date, int type) {
+
             if(photoImageView != null)
                 photoImageView.setImageResource(R.drawable.image_placeholder_face);
 
             dateTextView.setText(date);
+
+            this.number = phoneNumberManager.format(number);
+
+            if(!hasContact)
+                photoImageView.setOnClickListener(null);
+
         }
 
-//        public abstract void setContactData(String contactKey, String contactName, String contactPhoto);
-        public void setContactData(final String contactKey, final String contactName, String contactPhoto) {
+        public void setContactData() {
             // @todo: fix bug with contact data persisting in recycled list.
-
-            this.contactKey   = contactKey;
-            this.contactName  = contactName;
-            this.contactPhoto = contactPhoto;
+            if(!hasContact)
+                return;
 
             if(photoImageView != null) {
                 if(contactPhoto != null && !contactPhoto.equals(""))
-                    photoImageView.setImageURI(Uri.parse(contactPhoto));
+                    photoImageView.setImageURI(Uri.parse(this.contactPhoto));
 
-                Log.e("MYAPP:CONTACT_KEY", contactKey);
-
-                if(!contactKey.equals(""))
                 photoImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         CallLogHelper.showContact(mContext, contactKey);
-                        Log.e("MYAPP:CONTACT_KEY", contactKey + "-" + contactName);
                     }
                 });
             }
@@ -194,7 +198,7 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
         public void setDataOnView(int position, String number, String duration, String date, int type) {
             super.setDataOnView(position, number, duration, date, type);
 
-            actorTextView.setText(number);
+            actorTextView.setText(this.number);
 
             switch (type){
                 case CallLog.Calls.MISSED_TYPE:
@@ -221,10 +225,10 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
         }
 
         @Override
-        public void setContactData(String contactKey, String contactName, String contactPhoto) {
-            super.setContactData(contactKey, contactName, contactPhoto);
+        public void setContactData() {
+            super.setContactData();
 
-            actorTextView.setText(contactName);
+            actorTextView.setText(this.contactName);
         }
     }
 
@@ -239,15 +243,15 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
             super.setDataOnView(position, number, duration, date, type);
 
             targetTextView.setText(number);
-            typeImageView.setImageResource(R.drawable.image_call_log_out);
             targetTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+            typeImageView.setImageResource(R.drawable.image_call_log_out);
         }
 
         @Override
-        public void setContactData(String contactKey, String contactName, String contactPhoto) {
-            super.setContactData(contactKey, contactName, contactPhoto);
+        public void setContactData() {
+            super.setContactData();
 
-            targetTextView.setText(contactName);
+            targetTextView.setText(this.contactName);
         }
     }
 
