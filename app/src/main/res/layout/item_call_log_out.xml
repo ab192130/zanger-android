@@ -75,10 +75,10 @@
 
             <TextView
                 android:id="@+id/item_call_log_target_text"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="John Doe"
                 android:layout_gravity="center_vertical"
+                android:text="John Doe"
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
 

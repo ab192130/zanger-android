@@ -84,6 +84,7 @@
                 android:layout_marginLeft="8dp"
                 android:text="called you"
 
+                android:textColor="@color/colorTextDefault"
                 android:textSize="14sp" />
         </LinearLayout>
     </android.support.v7.widget.CardView>

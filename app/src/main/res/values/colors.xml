@@ -6,6 +6,7 @@
     <color name="colorZero">#6B19E0</color>
     <color name="colorOne">#6A1BD9</color>
     <color name="colorTwo">#4806A0</color>
+    <color name="colorTextDefault">#747474</color>
     <color name="colorAndroidDarkGray">@android:color/darker_gray</color>
     <color name="colorBackgroundLight">#ededed</color>
     <color name="colorBackgroundLightTwo">#f7f7f7</color>

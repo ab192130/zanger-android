@@ -7,13 +7,14 @@ import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdapter.CallLogViewHolder> {
+public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdapter.GenericViewHolder> {
 
     private Cursor mCursor;
     private Context mContext;
@@ -48,7 +49,7 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
 
     @NonNull
     @Override
-    public CallLogViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public GenericViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView;
 
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
@@ -56,19 +57,19 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
         switch (viewType) {
             case VIEWTYPE_OUTGOING: // outgoing, sent
                 itemView = layoutInflater
-                        .inflate(com.mavroo.dialer.R.layout.item_call_log_out, parent, false);
-                break;
+                        .inflate(R.layout.item_call_log_out, parent, false);
+
+                return new RightViewHolder(itemView);
             default: // incoming, received
                 itemView = LayoutInflater.from(mContext)
-                        .inflate(com.mavroo.dialer.R.layout.item_call_log_in, parent, false);
-                break;
-        }
+                        .inflate(R.layout.item_call_log_in, parent, false);
 
-        return new CallLogViewHolder(itemView);
+                return new LeftViewHolder(itemView);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CallLogViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull GenericViewHolder holder, int position) {
         if(!mCursor.moveToPosition(position))
             return;
 
@@ -80,40 +81,9 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
 
         final Cursor contactCursor = ContactHelper.getByPhoneNumber(mContext, number);
 
-        // defaults
-        //holder.nameTextView.setText(R.string.item_call_log_caller_unknown);
-
         number = phoneNumberManager.format(number);
 
-        if(holder.photoImageView != null)
-        holder.photoImageView.setImageResource(R.drawable.image_placeholder_face);
-
-        switch (holder.getItemViewType()) {
-            case VIEWTYPE_OUTGOING: //right
-                holder.targetTextView.setText(number);
-                holder.typeImageView.setImageResource(R.drawable.image_call_log_out);
-                break;
-
-            default: //left
-
-                holder.actorTextView.setText(number);
-
-                switch (type){
-                    case CallLog.Calls.MISSED_TYPE:
-                        holder.typeImageView.setImageResource(R.drawable.image_call_log_missed);
-
-                        holder.targetTextView.setText(R.string.call_log_action_missed);
-                        holder.targetTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_dark));
-                        break;
-
-                    default:
-                        holder.targetTextView.setText(R.string.call_log_action_incoming);
-                        holder.typeImageView.setImageResource(R.drawable.image_call_log_in);
-                        break;
-
-                }
-                break;
-        }
+        holder.setDataOnView(position, number, duration, date, type);
 
         if(CallLogHelper.hasLogs(contactCursor)) {
             // from contact data
@@ -126,40 +96,32 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
                     String contactPhoto = contactCursor.getString(contactCursor
                             .getColumnIndex(ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI));
 
-                    switch (type) {
-                        case CallLog.Calls.OUTGOING_TYPE: // outgoing, sent
-                            holder.targetTextView.setText(contactName);
-                            break;
+                    holder.setContactData(contactKey, contactName, contactPhoto);
 
-                        default: // incoming, received
-                            holder.actorTextView.setText(contactName);
-                            break;
-                    }
+                    // if(holder.photoImageView != null && contactPhoto != null && !contactPhoto.equals("")) {
+                    //     holder.photoImageView.setImageURI(Uri.parse(contactPhoto));
+                    // }
 
-                    if(holder.photoImageView != null && contactPhoto != null && !contactPhoto.equals("")) {
-                        holder.photoImageView.setImageURI(Uri.parse(contactPhoto));
-                    }
-
-                    if(holder.photoImageView != null)
-                    holder.photoImageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            CallLogHelper.showContact(mContext, contactKey);
-                        }
-                    });
+                     /*if(holder.photoImageView != null)
+                     holder.photoImageView.setOnClickListener(new View.OnClickListener() {
+                         @Override
+                         public void onClick(View v) {
+                             CallLogHelper.showContact(mContext, contactKey);
+                         }
+                     });*/
                 }
             } finally {
 
-                /*if(position == mCursor.getCount() - 1) {
-                    onBottomReachedListener.onBottomReached(position);
-                } else
-                    onBottomReachedListener.onBottomNotReached(position);*/
+                // if(position == mCursor.getCount() - 1) {
+                //     onBottomReachedListener.onBottomReached(position);
+                // } else
+                //     onBottomReachedListener.onBottomNotReached(position);
 
                 contactCursor.close();
             }
         }
 
-        holder.dateTextView.setText(date);
+        //holder.dateTextView.setText(date);
     }
 
     @Override
@@ -167,21 +129,125 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
         return mCursor.getCount();
     }
 
-    class CallLogViewHolder extends RecyclerView.ViewHolder{
+    abstract class GenericViewHolder extends RecyclerView.ViewHolder
+    {
         ImageView typeImageView;
-        TextView actorTextView;
-        TextView targetTextView;
-        TextView dateTextView;
+        TextView  actorTextView;
+        TextView  targetTextView;
+        TextView  dateTextView;
         ImageView photoImageView;
 
-        CallLogViewHolder(View view) {
+        String    contactKey;
+        String    contactName;
+        String    contactPhoto;
+
+        GenericViewHolder(View view) {
             super(view);
 
             actorTextView  = view.findViewById(R.id.item_call_log_actor);
             targetTextView = view.findViewById(R.id.item_call_log_target_text);
             dateTextView   = view.findViewById(R.id.item_call_log_date);
             photoImageView = view.findViewById(R.id.item_call_log_photo);
-            typeImageView = view.findViewById(R.id.item_call_log_type_image);
+            typeImageView  = view.findViewById(R.id.item_call_log_type_image);
+        }
+
+        public void setDataOnView(int position, String number, String duration, String date, int type) {
+            if(photoImageView != null)
+                photoImageView.setImageResource(R.drawable.image_placeholder_face);
+
+            dateTextView.setText(date);
+        }
+
+//        public abstract void setContactData(String contactKey, String contactName, String contactPhoto);
+        public void setContactData(final String contactKey, final String contactName, String contactPhoto) {
+            // @todo: fix bug with contact data persisting in recycled list.
+
+            this.contactKey   = contactKey;
+            this.contactName  = contactName;
+            this.contactPhoto = contactPhoto;
+
+            if(photoImageView != null) {
+                if(contactPhoto != null && !contactPhoto.equals(""))
+                    photoImageView.setImageURI(Uri.parse(contactPhoto));
+
+                Log.e("MYAPP:CONTACT_KEY", contactKey);
+
+                if(!contactKey.equals(""))
+                photoImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        CallLogHelper.showContact(mContext, contactKey);
+                        Log.e("MYAPP:CONTACT_KEY", contactKey + "-" + contactName);
+                    }
+                });
+            }
+        }
+    }
+
+    class LeftViewHolder extends GenericViewHolder{
+
+        LeftViewHolder(View view) {
+            super(view);
+        }
+
+        @Override
+        public void setDataOnView(int position, String number, String duration, String date, int type) {
+            super.setDataOnView(position, number, duration, date, type);
+
+            actorTextView.setText(number);
+
+            switch (type){
+                case CallLog.Calls.MISSED_TYPE:
+                    typeImageView.setImageResource(R.drawable.image_call_log_missed);
+
+                    targetTextView.setText(R.string.call_log_action_missed);
+                    targetTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_dark));
+                    break;
+
+                case CallLog.Calls.REJECTED_TYPE:
+                    typeImageView.setImageResource(R.drawable.image_call_log_rejected);
+
+                    targetTextView.setText(R.string.call_log_action_rejected);
+                    targetTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_orange_dark));
+                    break;
+
+                default:
+                    targetTextView.setText(R.string.call_log_action_incoming);
+                    targetTextView.setTextColor(mContext.getResources().getColor(R.color.colorTextDefault));
+                    typeImageView.setImageResource(R.drawable.image_call_log_in);
+                    break;
+
+            }
+        }
+
+        @Override
+        public void setContactData(String contactKey, String contactName, String contactPhoto) {
+            super.setContactData(contactKey, contactName, contactPhoto);
+
+            actorTextView.setText(contactName);
+        }
+    }
+
+    class RightViewHolder extends GenericViewHolder {
+
+        RightViewHolder(View view) {
+            super(view);
+        }
+
+        @Override
+        public void setDataOnView(int position, String number, String duration, String date, int type) {
+            super.setDataOnView(position, number, duration, date, type);
+
+            targetTextView.setText(number);
+            typeImageView.setImageResource(R.drawable.image_call_log_out);
+            targetTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+        }
+
+        @Override
+        public void setContactData(String contactKey, String contactName, String contactPhoto) {
+            super.setContactData(contactKey, contactName, contactPhoto);
+
+            targetTextView.setText(contactName);
         }
     }
 
