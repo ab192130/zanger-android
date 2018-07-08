@@ -6,8 +6,8 @@ android {
         applicationId 'com.mavroo.zanger'
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 6
-        versionName '0.2.6'
+        versionCode 7
+        versionName '0.2.7'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -35,7 +35,7 @@ dependencies {
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'com.android.support:cardview-v7:27.1.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation 'com.mikhaellopez:circularimageview:3.0.2'
     //    implementation "com.terrakok.phonematter:phonematter:1.0@aar"
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.4.2'
