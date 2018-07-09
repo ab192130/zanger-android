@@ -71,14 +71,14 @@ public class MainActivity extends AppCompatActivity{
 
         List<CircleItem> listCircles = new ArrayList<>();
 
-        listCircles.add(new CircleItem("Home", R.drawable.image_placeholder_face));
-        listCircles.add(new CircleItem("Taksi", R.drawable.image_placeholder_face));
-        listCircles.add(new CircleItem("Restaurant", R.drawable.image_placeholder_face));
+        listCircles.add(new CircleItem("My home", R.drawable.image_icon_house));
+        listCircles.add(new CircleItem("Taxi", R.drawable.image_icon_taxi));
+        listCircles.add(new CircleItem("Restaurant", R.drawable.image_icon_restaurant));
         listCircles.add(new CircleItem("Hotel", R.drawable.image_placeholder_face));
         listCircles.add(new CircleItem("Burhan A,", R.drawable.image_placeholder_face));
         listCircles.add(new CircleItem("Azer H.", R.drawable.image_placeholder_face));
 
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 7; i++) {
             listCircles.add(new CircleItem("[none]", R.drawable.image_placeholder_face));
         }
 

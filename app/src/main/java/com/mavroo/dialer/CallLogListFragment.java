@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ public class CallLogListFragment extends Fragment{
     RecyclerView callLogRecyclerView;
     CallLogCursorAdapter callLogAdapter;
     Cursor callLogsCursor;
+    NestedScrollView nestedScrollView;
 
     @Nullable
     @Override
@@ -30,6 +32,9 @@ public class CallLogListFragment extends Fragment{
 
         callLogRecyclerView = v.findViewById(R.id.recycler_view);
         callLogsCursor = CallLogHelper.getCallLogs(mActivity, mActivity.getContentResolver());
+
+
+        nestedScrollView =         mActivity.findViewById(R.id.nested_scroll_view);
 
         if(!CallLogHelper.hasLogs(callLogsCursor))
             return null;
@@ -55,6 +60,13 @@ public class CallLogListFragment extends Fragment{
         if(!CallLogHelper.hasLogs(callLogsCursor))
             return;
 
-         callLogRecyclerView.scrollToPosition(callLogsCursor.getCount() - 1);
+        nestedScrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                nestedScrollView.fullScroll(View.FOCUS_DOWN);
+            }
+        });
+
+        callLogRecyclerView.scrollToPosition(callLogsCursor.getCount() - 1);
     }
 }

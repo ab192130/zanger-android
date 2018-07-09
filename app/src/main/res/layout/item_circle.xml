@@ -12,8 +12,8 @@
         android:orientation="vertical">
         <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/item_circle_image"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             app:civ_border="false"
             android:layout_gravity="center_horizontal"
             android:maxHeight="?attr/actionBarSize"
@@ -24,7 +24,8 @@
             android:layout_width="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"
-            android:text="Taksi"
+            android:text="[none]"
+            android:textSize="12sp"
             android:textAlignment="center" />
     </LinearLayout>
 </LinearLayout>

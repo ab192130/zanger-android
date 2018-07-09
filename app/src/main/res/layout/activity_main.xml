@@ -14,41 +14,71 @@
 
         <android.support.v7.widget.Toolbar
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@android:color/white"
-
-            android:contentInsetEnd="0dp"
-            android:contentInsetLeft="0dp"
-            android:contentInsetRight="0dp"
-            android:contentInsetStart="0dp"
-            app:contentInsetEnd="0dp"
-            app:contentInsetLeft="0dp"
-            app:contentInsetRight="0dp"
-            app:contentInsetStart="0dp">
-
-            <TextView
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/white">
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="zanger"
-                android:textAlignment="center" />
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="zanger"
+                    android:gravity="center"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:layout_alignParentStart="true"/>
+
+                <ImageButton
+                    android:id="@+id/toolbar_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_action_settings"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_alignParentEnd="true"/>
+
+            </RelativeLayout>
 
         </android.support.v7.widget.Toolbar>
 
-        <android.support.v7.widget.RecyclerView
+        <!--<android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view_circles"
             android:layout_width="match_parent"
             android:background="@color/colorBackgroundLightTwo"
             android:layout_height="match_parent"
             android:paddingBottom="10dp"
-            android:paddingTop="10dp"/>
+            android:paddingTop="10dp"/>-->
 
     </android.support.design.widget.AppBarLayout>
 
-    <FrameLayout
-        android:id="@+id/layout_frame_call_log"
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        android:paddingBottom="60dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:orientation="vertical">
+            <FrameLayout
+                android:id="@+id/layout_frame_call_log"
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_circles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp" />
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
     <!-- include bottom sheet -->
     <include layout="@layout/dial_bottom_sheet" />
