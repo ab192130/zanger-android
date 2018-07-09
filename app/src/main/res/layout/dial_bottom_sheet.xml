@@ -12,6 +12,7 @@
     app:behavior_hideable="false"
     app:behavior_peekHeight="70dp"
     android:theme="@style/AppTheme"
+    android:elevation="60dp"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
     <RelativeLayout

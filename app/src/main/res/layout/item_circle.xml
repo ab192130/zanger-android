@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:maxHeight="?attr/actionBarSize"
+    android:layout_marginRight="7dp"
+    android:layout_marginLeft="7dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/item_circle_image"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            app:civ_border="false"
+            android:layout_gravity="center_horizontal"
+            android:maxHeight="?attr/actionBarSize"
+            android:src="@drawable/image_placeholder_face"/>
+
+        <TextView
+            android:id="@+id/item_circle_name"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content"
+            android:text="Taksi"
+            android:textAlignment="center" />
+    </LinearLayout>
+</LinearLayout>

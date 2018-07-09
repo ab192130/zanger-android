@@ -10,6 +10,7 @@ import android.os.Build;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telecom.TelecomManager;
 import android.view.View;
@@ -17,6 +18,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //import com.terrakok.phonematter.PhoneFormat;
 
@@ -32,7 +36,9 @@ public class MainActivity extends AppCompatActivity{
     CallLogHelper callLogHelper;
     StringManager stringManager;
     RecyclerView callLogRecyclerView;
+    RecyclerView rvCircles;
     CallLogCursorAdapter callLogAdapter;
+    CirclesAdapter adapterCircles;
     Cursor callLogsCursor;
 
     @Override
@@ -42,6 +48,8 @@ public class MainActivity extends AppCompatActivity{
         setContentView(com.mavroo.dialer.R.layout.activity_main);
 
         editTextDialPadCall = findViewById(com.mavroo.dialer.R.id.dial_pad_call);
+        rvCircles = findViewById(R.id.recycler_view_circles);
+
         dialpadManager = new DialpadManager(this);
         callLogManager = new CallLogManager(this);
 
@@ -57,6 +65,26 @@ public class MainActivity extends AppCompatActivity{
         callManager = CallManager.getInstance();
         callLogHelper = CallLogHelper.getInstance();
         stringManager = StringManager.getInstance();
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        rvCircles.setLayoutManager(linearLayoutManager);
+
+        List<CircleItem> listCircles = new ArrayList<>();
+
+        listCircles.add(new CircleItem("Home", R.drawable.image_placeholder_face));
+        listCircles.add(new CircleItem("Taksi", R.drawable.image_placeholder_face));
+        listCircles.add(new CircleItem("Restaurant", R.drawable.image_placeholder_face));
+        listCircles.add(new CircleItem("Hotel", R.drawable.image_placeholder_face));
+        listCircles.add(new CircleItem("Burhan A,", R.drawable.image_placeholder_face));
+        listCircles.add(new CircleItem("Azer H.", R.drawable.image_placeholder_face));
+
+        for (int i = 0; i < 15; i++) {
+            listCircles.add(new CircleItem("[none]", R.drawable.image_placeholder_face));
+        }
+
+        adapterCircles = new CirclesAdapter(listCircles);
+        rvCircles.setAdapter(adapterCircles);
+
     }
 
     @Override
