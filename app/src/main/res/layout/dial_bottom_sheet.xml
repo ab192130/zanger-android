@@ -188,19 +188,19 @@
 
             <Button
                 android:id="@+id/dial_num_one"
-                style="@style/ButtonDialNumTheme"
+                style="@style/ButtonThemeDialNum"
                 android:onClick="onClickDialNum"
                 android:text="@string/dial_num_one" />
 
             <Button
                 android:id="@+id/dial_num_two"
-                style="@style/ButtonDialNumTheme"
+                style="@style/ButtonThemeDialNum"
                 android:onClick="onClickDialNum"
                 android:text="@string/dial_num_two" />
 
             <Button
                 android:id="@+id/dial_num_three"
-                style="@style/ButtonDialNumTheme"
+                style="@style/ButtonThemeDialNum"
                 android:onClick="onClickDialNum"
                 android:text="@string/dial_num_three" />
         </LinearLayout>
@@ -215,19 +215,19 @@
 
             <Button
                 android:id="@+id/dial_num_four"
-                style="@style/ButtonDialNumTheme"
+                style="@style/ButtonThemeDialNum"
                 android:onClick="onClickDialNum"
                 android:text="@string/dial_num_four" />
 
             <Button
                 android:id="@+id/dial_num_five"
-                style="@style/ButtonDialNumTheme"
+                style="@style/ButtonThemeDialNum"
                 android:onClick="onClickDialNum"
                 android:text="@string/dial_num_five" />
 
             <Button
                 android:id="@+id/dial_num_six"
-                style="@style/ButtonDialNumTheme"
+                style="@style/ButtonThemeDialNum"
                 android:onClick="onClickDialNum"
                 android:text="@string/dial_num_six" />
         </LinearLayout>
@@ -242,19 +242,19 @@
 
             <Button
                 android:id="@+id/dial_num_seven"
-                style="@style/ButtonDialNumTheme"
+                style="@style/ButtonThemeDialNum"
                 android:onClick="onClickDialNum"
                 android:text="@string/dial_num_seven" />
 
             <Button
                 android:id="@+id/dial_num_eight"
-                style="@style/ButtonDialNumTheme"
+                style="@style/ButtonThemeDialNum"
                 android:onClick="onClickDialNum"
                 android:text="@string/dial_num_eight" />
 
             <Button
                 android:id="@+id/dial_num_nine"
-                style="@style/ButtonDialNumTheme"
+                style="@style/ButtonThemeDialNum"
                 android:onClick="onClickDialNum"
                 android:text="@string/dial_num_nine" />
         </LinearLayout>
@@ -270,19 +270,19 @@
 
             <Button
                 android:id="@+id/dial_num_ulduz"
-                style="@style/ButtonDialNumTheme"
+                style="@style/ButtonThemeDialNum"
                 android:onClick="onClickDialNum"
-                android:text="@string/dial_num_ulduz" />
+                android:text="@string/dial_num_star" />
 
             <Button
                 android:id="@+id/dial_num_zero"
-                style="@style/ButtonDialNumTheme"
+                style="@style/ButtonThemeDialNum"
                 android:onClick="onClickDialNum"
                 android:text="@string/dial_num_zero" />
 
             <Button
                 android:id="@+id/dial_num_diyez"
-                style="@style/ButtonDialNumTheme"
+                style="@style/ButtonThemeDialNum"
                 android:onClick="onClickDialNum"
                 android:text="@string/dial_num_sheet" />
         </LinearLayout>

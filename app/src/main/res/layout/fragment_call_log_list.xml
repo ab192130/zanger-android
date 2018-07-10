@@ -8,5 +8,6 @@
     android:clickable="true"
     android:scrollbars="vertical"
     android:focusable="true"
-    android:paddingBottom="50dp">
+    android:paddingBottom="50dp"
+    android:nestedScrollingEnabled="false">
 </android.support.v7.widget.RecyclerView>

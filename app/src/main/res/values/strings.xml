@@ -13,7 +13,7 @@
     <string name="dial_num_nine">9</string>
     <string name="dial_num_sheet">#</string>
     <string name="dial_num_zero">0</string>
-    <string name="dial_num_ulduz">*</string>
+    <string name="dial_num_star">*</string>
     <string name="dial_pad_call">call</string>
     <string name="dial_clear">clear</string>
     <string name="item_call_log_photo">Caller photo</string>

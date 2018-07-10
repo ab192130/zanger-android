@@ -257,6 +257,7 @@ class DialpadManager {
 
         numberDial = numberDial + number;
         editTextDialpadCall.append(number);
+        editTextDialpadCall.setSelection(getDialNumber().length());
 
         previewNumber();
     }

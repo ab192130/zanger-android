@@ -9,14 +9,13 @@
         <item name="android:colorControlHighlight">@android:color/darker_gray</item>
     </style>
 
-    <!--<style name="BottomSheet.TopDivider">
-        <item name="android:background">@android:color/holo_red_dark</item>
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">1dp</item>
-        <item name="android:layout_marginBottom">8dp</item>
-    </style>-->
+    <style name="DialogThemeCustom">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
     
-    <style name="ButtonDialNumTheme" parent="@style/Widget.AppCompat.Button">
+    <style name="ButtonThemeDialNum" parent="@style/Widget.AppCompat.Button">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">50dp</item>
         <item name="android:layout_weight">1</item>
@@ -25,6 +24,17 @@
         <item name="android:background">?selectableItemBackgroundBorderless</item>
         <!--<item name="android:background">@android:color/white</item>-->
         <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="ButtonThemeInputNum" parent="@style/Widget.AppCompat.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>
 
 </resources>
