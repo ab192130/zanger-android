@@ -8,9 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-class NumberInputDialog extends Dialog{
+class InputPhoneNumberDialog extends Dialog{
     private static final int DIALOG_THEME_CUSTOM    = R.style.DialogThemeCustom;
-    private static final int DEFAULT_LAYOUT_CONTENT = R.layout.dialog_circle_number;
+    private static final int DEFAULT_LAYOUT_CONTENT = R.layout.input_phone_number;
 
     private final Dialog thisDialog = this;
     private FloatingActionButton buttonOk;
@@ -30,13 +30,13 @@ class NumberInputDialog extends Dialog{
     private Button buttonNumSheet;
     private EditText editInputNum;
 
-    NumberInputDialog(@NonNull Context context) {
+    InputPhoneNumberDialog(@NonNull Context context) {
         super(context, DIALOG_THEME_CUSTOM);
 
         setContentView(DEFAULT_LAYOUT_CONTENT);
 
-        buttonOk      = this.findViewById(R.id.ok);
-        buttonDismiss = this.findViewById(R.id.cancel);
+        buttonOk      = this.findViewById(R.id.button_save);
+        buttonDismiss = this.findViewById(R.id.button_cancel);
 
         editInputNum  = this.findViewById(R.id.input_num_edit);
 

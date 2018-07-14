@@ -38,7 +38,7 @@ class PhoneNumberManager {
         return phoneUtil.parse(number, DEFAULT_REGION);
     }
 
-    public boolean isRunnable(String number) {
+    public static boolean isRunnable(String number) {
         try {
             return StringManager.getLastChar(number).equals("#");
         } catch (NullPointerException e) {

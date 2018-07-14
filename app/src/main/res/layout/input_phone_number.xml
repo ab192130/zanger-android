@@ -169,7 +169,7 @@
             android:layout_alignBottom="@id/dialog_num_input_content">
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/cancel"
+                android:id="@+id/button_cancel"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 app:backgroundTint="@android:color/white"
@@ -178,7 +178,7 @@
                 android:src="@drawable/ic_cancel" />
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/ok"
+                android:id="@+id/button_save"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:elevation="20dp"

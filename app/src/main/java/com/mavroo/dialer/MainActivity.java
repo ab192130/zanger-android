@@ -4,7 +4,6 @@ import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
@@ -14,7 +13,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telecom.TelecomManager;
-import android.util.Log;
+import android.view.ContextMenu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,7 +25,8 @@ import java.util.List;
 
 //import com.terrakok.phonematter.PhoneFormat;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity
+        implements InputPhoneNumberDialogTwo.OnPhoneNumberInputListener{
 
     private static final String DEBUG_TAG = "MYAPP";
     private static final int CODE_REQUEST_SET_DEFAULT_DIALER = 1;
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity{
     CallLogCursorAdapter callLogAdapter;
     CirclesAdapter adapterCircles;
     Cursor callLogsCursor;
+    SettingsManager settingsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,16 +68,17 @@ public class MainActivity extends AppCompatActivity{
         callManager = CallManager.getInstance();
         callLogHelper = CallLogHelper.getInstance();
         stringManager = StringManager.getInstance();
+        settingsManager = new SettingsManager(this);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         rvCircles.setLayoutManager(linearLayoutManager);
 
         List<CircleItem> listCircles = new ArrayList<>();
 
-        listCircles.add(new CircleItem("My home", R.drawable.image_icon_house));
-        listCircles.add(new CircleItem("Taxi", R.drawable.image_icon_taxi));
-        listCircles.add(new CircleItem("Restaurant", R.drawable.image_icon_restaurant));
-        listCircles.add(new CircleItem("Hotel", R.drawable.image_placeholder_face));
+        listCircles.add(new CircleItem("Home", R.drawable.image_icon_house, CirclesAdapter.DEFAULT_TYPE_HOME));
+        listCircles.add(new CircleItem("Taxi", R.drawable.image_icon_taxi, CirclesAdapter.DEFAULT_TYPE_TAXI));
+        listCircles.add(new CircleItem("Restaurant", R.drawable.image_icon_restaurant, CirclesAdapter.DEFAULT_TYPE_RESTAURANT));
+        listCircles.add(new CircleItem("Hotel", R.drawable.image_placeholder_face, CirclesAdapter.DEFAULT_TYPE_HOTEL));
         listCircles.add(new CircleItem("Burhan A,", R.drawable.image_placeholder_face));
         listCircles.add(new CircleItem("Azer H.", R.drawable.image_placeholder_face));
 
@@ -84,7 +86,7 @@ public class MainActivity extends AppCompatActivity{
             listCircles.add(new CircleItem("[none]", R.drawable.image_placeholder_face));
         }
 
-        adapterCircles = new CirclesAdapter(listCircles);
+        adapterCircles = new CirclesAdapter(this, getSupportFragmentManager(), listCircles);
         rvCircles.setAdapter(adapterCircles);
 
     }
@@ -197,5 +199,14 @@ public class MainActivity extends AppCompatActivity{
 
     public void onClear(View view) {
         dialpadManager.clearDialNumber();
+    }
+
+    @Override
+    public void onApplyInputPhoneNumber(String data, int requestCode) {
+        if(requestCode == CirclesAdapter.CODE_REQUEST_DEFAULT_NUMBER)  {
+
+            String key = "default_number_home";
+            settingsManager.saveSetting(key, data);
+        }
     }
 }

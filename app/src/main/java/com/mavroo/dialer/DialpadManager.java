@@ -74,7 +74,7 @@ class DialpadManager {
         dialpadSheet = BottomSheetBehavior.from(dialpadLayout);
         dialpadSheet.setHideable(false);
         phoneNumberManager = new PhoneNumberManager();
-        vibrator = (Vibrator) mContext.getSystemService(mContext.VIBRATOR_SERVICE);
+        vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
 
         buttonDialClear = mActivity.findViewById(R.id.dial_clear);
         buttonDialNumZero = mActivity.findViewById(R.id.dial_num_zero);
@@ -109,7 +109,7 @@ class DialpadManager {
         } else {
             try {
                 final Method method = EditText.class.getMethod(
-                        "setShowSoftInputOnFocus", new Class[]{boolean.class});
+                        "setShowSoftInputOnFocus", boolean.class);
                 method.setAccessible(true);
                 method.invoke(editTextDialpadCall, false);
             } catch (Exception e) {
@@ -281,7 +281,7 @@ class DialpadManager {
         if (getDialNumber().equals(""))
             return;
 
-        if (phoneNumberManager.isRunnable(getDialNumber())) {
+        if (PhoneNumberManager.isRunnable(getDialNumber())) {
             showRunnableActionType();
         } else {
             resetCallActionType();
@@ -329,33 +329,38 @@ class DialpadManager {
         return phoneUtil.parse(number, DEFAULT_REGION);
     }
 
-    void makeCall(String number) {
-        if (number == null)
-            number = getDialNumber();
+    static void makeCall(Context context, String number) {
 
         if(number.isEmpty())
             return;
 
-        if(ActivityCompat.checkSelfPermission(mContext,
+        if(ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
 
             String[] permissions = new String[] {Manifest.permission.CALL_PHONE};
             ActivityCompat
                     .requestPermissions(
-                            mActivity,
+                            (Activity) context,
                             permissions,
                             CODE_REQUEST_PERMISSION_PHONE_CALL);
             return;
         }
 
-        if(phoneNumberManager.isRunnable(number)) {
+        if(PhoneNumberManager.isRunnable(number)) {
             number = number.replace("#", Uri.encode("#"));
         }
 
         Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(Uri.parse("tel:" + number));
 
-        mContext.startActivity(intent);
+        context.startActivity(intent);
+    }
+
+    void makeCall(String number) {
+        if (number == null)
+            number = getDialNumber();
+
+        makeCall(mContext, number);
     }
 
     public void openDialpad() {
