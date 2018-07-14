@@ -25,8 +25,7 @@ import java.util.List;
 
 //import com.terrakok.phonematter.PhoneFormat;
 
-public class MainActivity extends AppCompatActivity
-        implements InputPhoneNumberDialogTwo.OnPhoneNumberInputListener{
+public class MainActivity extends AppCompatActivity{
 
     private static final String DEBUG_TAG = "MYAPP";
     private static final int CODE_REQUEST_SET_DEFAULT_DIALER = 1;
@@ -199,14 +198,5 @@ public class MainActivity extends AppCompatActivity
 
     public void onClear(View view) {
         dialpadManager.clearDialNumber();
-    }
-
-    @Override
-    public void onApplyInputPhoneNumber(String data, int requestCode) {
-        if(requestCode == CirclesAdapter.CODE_REQUEST_DEFAULT_NUMBER)  {
-
-            String key = "default_number_home";
-            settingsManager.saveSetting(key, data);
-        }
     }
 }

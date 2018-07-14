@@ -8,7 +8,7 @@ public class SettingsManager {
     private Activity mActivity;
     private Context mContext;
 
-    public SettingsManager(Context context) {
+    SettingsManager(Context context) {
         mContext = context;
         mActivity = (Activity) context;
     }
@@ -21,25 +21,29 @@ public class SettingsManager {
         return getSharedPrefences().edit();
     }
 
-    public void saveSetting(String key, String value) {
+    public void save(String key, String value) {
         getEditor().putString(key, value).apply();
     }
 
-    public void saveSetting(String key, int value) {
+    public void save(String key, int value) {
         getEditor().putInt(key, value).apply();
     }
 
-    public void saveSetting(String key, boolean value) {
+    public void save(String key, boolean value) {
         getEditor().putBoolean(key, value).apply();
     }
 
-    public String readSetting(String key, String def) {
+    public String read(String key, String def) {
         return getSharedPrefences().getString(key, def);
     }
 
     public boolean hasSetting(String key, String def) {
-        String setting = readSetting(key, def);
+        String setting = read(key, def);
 
-        return (setting != null && !readSetting(key, def).isEmpty());
+        return (setting != null && !read(key, def).isEmpty());
+    }
+
+    public void remove(String key) {
+        getEditor().remove(key).apply();
     }
 }

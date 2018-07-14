@@ -36,7 +36,7 @@ public class InputPhoneNumberDialogTwo extends DialogFragment {
     OnPhoneNumberInputListener mListener;
 
     public interface OnPhoneNumberInputListener{
-        void onApplyInputPhoneNumber(String data, int requestCode);
+        void onApplyInputPhoneNumber(@Nullable Bundle data, int requestCode);
     }
 
     public void setRequestCode(int code) {
@@ -83,7 +83,10 @@ public class InputPhoneNumberDialogTwo extends DialogFragment {
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onApplyInputPhoneNumber(editInputNum.getText().toString(), requestCode);
+                Bundle data = new Bundle();
+                data.putString("phone_number", editInputNum.getText().toString());
+
+                mListener.onApplyInputPhoneNumber(data, requestCode);
                 getDialog().dismiss();
             }
         });
@@ -103,7 +106,7 @@ public class InputPhoneNumberDialogTwo extends DialogFragment {
         super.onCreate(savedInstanceState);
     }
 
-    @Override
+    /*@Override
     public void onAttach(Context context) {
         super.onAttach(context);
         
@@ -112,6 +115,10 @@ public class InputPhoneNumberDialogTwo extends DialogFragment {
         } catch (ClassCastException e) {
             Log.e("MYAPP", "onAttach: ClassCastException: " + e.getMessage());
         }
+    }*/
+
+    public void setOnPhoneInputListener(OnPhoneNumberInputListener phoneInputListener) {
+        mListener = phoneInputListener;
     }
 
     private class OnClickListener implements View.OnClickListener {

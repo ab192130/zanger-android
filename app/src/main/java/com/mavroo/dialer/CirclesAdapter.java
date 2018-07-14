@@ -1,19 +1,15 @@
 package com.mavroo.dialer;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.view.SupportMenuInflater;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,36 +50,8 @@ public class CirclesAdapter extends RecyclerView.Adapter<CirclesAdapter.CircleVi
         return new CircleViewHolder(view);
     }
 
-    private String getDefaultKey(CircleItem item) {
-        String defaultKey = null;
-
-        switch (item.defaultType) {
-            case DEFAULT_TYPE_HOME:
-                defaultKey = "default_number_home";
-                break;
-
-            case DEFAULT_TYPE_TAXI:
-                defaultKey = "default_number_taxi";
-                break;
-
-            case DEFAULT_TYPE_RESTAURANT:
-                defaultKey = "default_number_restaurant";
-                break;
-
-            case DEFAULT_TYPE_HOTEL:
-                defaultKey = "default_number_hotel";
-                break;
-
-            default:
-                defaultKey = "default_number_home";
-                break;
-        }
-
-        return defaultKey;
-    }
-
     private String getSettingsNumber(CircleItem item) {
-        return settingsManager.readSetting(getDefaultKey(item), "");
+        return settingsManager.read(item.getTypeName(), "");
     }
 
     @Override
@@ -131,9 +99,7 @@ public class CirclesAdapter extends RecyclerView.Adapter<CirclesAdapter.CircleVi
                             number = circleItem.number;
                         } else {
                             // @todo: set defaultKey to dialog
-                            InputPhoneNumberDialogTwo dialogInput = new InputPhoneNumberDialogTwo();
-                            dialogInput.setRequestCode(CirclesAdapter.CODE_REQUEST_DEFAULT_NUMBER);
-                            dialogInput.show(mFragmentManager, "none_tag");
+                            showDialogChangeNumber(circleItem);
                         }
                     }
 
@@ -146,12 +112,37 @@ public class CirclesAdapter extends RecyclerView.Adapter<CirclesAdapter.CircleVi
             itemView.setOnCreateContextMenuListener(this);
         }
 
+        private void showDialogChangeNumber(CircleItem item) {
+            InputPhoneNumberDialogTwo dialogInput = new InputPhoneNumberDialogTwo();
+            dialogInput.setRequestCode(CirclesAdapter.CODE_REQUEST_DEFAULT_NUMBER);
+
+            dialogInput.setOnPhoneInputListener(new InputPhoneNumberDialogTwo.OnPhoneNumberInputListener() {
+                @Override
+                public void onApplyInputPhoneNumber(@Nullable Bundle data, int requestCode) {
+                    if(requestCode == CirclesAdapter.CODE_REQUEST_DEFAULT_NUMBER)  {
+
+                        // data - phone number
+                        String key = circleItem.getTypeName();
+
+                        String phoneNumber = data.getString("phone_number");
+
+                        settingsManager.save(key, phoneNumber);
+                        circleItem.number = phoneNumber;
+
+                        notifyDataSetChanged();
+                    }
+                }
+            });
+
+            dialogInput.show(mFragmentManager, "none_tag");
+        }
+
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             if(circleItem.number != null) {
                 MenuItem miCall   = menu.add(Menu.NONE, 1, 1, "Call");
                 MenuItem miChange = menu.add(Menu.NONE, 1, 1, "Change number");
-                MenuItem miDelete = menu.add(Menu.NONE, 1, 1, "Clear number");
+                MenuItem miRemove = menu.add(Menu.NONE, 1, 1, "Remove number");
 
                 // User selected "Call"
                 miCall.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -164,6 +155,33 @@ public class CirclesAdapter extends RecyclerView.Adapter<CirclesAdapter.CircleVi
                     }
                 });
 
+                miChange.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        showDialogChangeNumber(circleItem);
+                        return true;
+                    }
+                });
+
+                miRemove.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        settingsManager.remove(circleItem.getTypeName());
+                        circleItem.number = null;
+                        notifyDataSetChanged();
+                        return true;
+                    }
+                });
+            } else {
+                MenuItem miSet = menu.add(Menu.NONE, 1, 1, "Set");
+
+                miSet.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        showDialogChangeNumber(circleItem);
+                        return true;
+                    }
+                });
             }
 
             MenuItem miHide = menu.add(Menu.NONE, 1, 1, "Unhighlight");
