@@ -25,6 +25,7 @@ public class CirclesAdapter extends RecyclerView.Adapter<CirclesAdapter.CircleVi
     public final static int DEFAULT_TYPE_TAXI       = 2;
     public final static int DEFAULT_TYPE_RESTAURANT = 3;
     public final static int DEFAULT_TYPE_HOTEL      = 4;
+    public final static int DEFAULT_TYPE_CONTACT    = 5;
 
     private Context mContext;
     private Activity mActivity;
