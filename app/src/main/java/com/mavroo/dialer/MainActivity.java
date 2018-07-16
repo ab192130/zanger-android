@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telecom.TelecomManager;
-import android.view.ContextMenu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,10 +34,9 @@ public class MainActivity extends AppCompatActivity{
     CallLogManager callLogManager;
     DialpadManager dialpadManager;
     CallLogHelper callLogHelper;
-    StringManager stringManager;
+    VariableManager variableManager;
     RecyclerView callLogRecyclerView;
     RecyclerView rvCircles;
-    CallLogCursorAdapter callLogAdapter;
     CirclesAdapter adapterCircles;
     Cursor callLogsCursor;
     SettingsManager settingsManager;
@@ -66,7 +64,7 @@ public class MainActivity extends AppCompatActivity{
 
         callManager = CallManager.getInstance();
         callLogHelper = CallLogHelper.getInstance();
-        stringManager = StringManager.getInstance();
+        variableManager = VariableManager.getInstance();
         settingsManager = new SettingsManager(this);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);

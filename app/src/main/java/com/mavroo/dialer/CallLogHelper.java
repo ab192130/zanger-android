@@ -16,6 +16,8 @@ import android.support.v4.content.ContentResolverCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import java.util.List;
+
 public class CallLogHelper {
     private static final CallLogHelper ourInstance = new CallLogHelper();
     private static final int CODE_REQUEST_PERMISSION_CALLLOG_READ = 109;
@@ -90,7 +92,7 @@ public class CallLogHelper {
         context.startActivity(intent);
     }
 
-    public static boolean hasLogs(Cursor callLogsCursor) {
-        return callLogsCursor != null && callLogsCursor.getCount() > 0;
+    public static boolean hasLogs(List<com.mavroo.dialer.CallLog> callLogs) {
+        return callLogs != null && callLogs.size() > 0;
     }
 }

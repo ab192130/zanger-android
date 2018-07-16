@@ -40,7 +40,7 @@ class PhoneNumberManager {
 
     public static boolean isRunnable(String number) {
         try {
-            return StringManager.getLastChar(number).equals("#");
+            return VariableManager.getLastChar(number).equals("#");
         } catch (NullPointerException e) {
             e.printStackTrace();
         }

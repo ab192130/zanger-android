@@ -7,16 +7,19 @@ import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdapter.GenericViewHolder> {
+import java.util.ArrayList;
+import java.util.List;
 
-    private Cursor mCursor;
+public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.GenericViewHolder> {
+
+    private final List<com.mavroo.dialer.CallLog> mList;
+//    private Cursor mCursor;
     private Context mContext;
     private CallLogHelper callLogHelper;
     private OnBottomReachedListener onBottomReachedListener;
@@ -25,26 +28,21 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
     private static final int VIEWTYPE_INCOMING = 1;
     private static final int VIEWTYPE_OUTGOING = 2;
 
-    CallLogCursorAdapter(Context context, Cursor cursor){
+    CallLogAdapter(Context context, List<com.mavroo.dialer.CallLog> list){
         callLogHelper = CallLogHelper.getInstance();
 
         mContext = context;
-        mCursor =  cursor;
+//        mCursor =  cursor;
+        mList = list;
         phoneNumberManager = new PhoneNumberManager();
     }
 
     @Override
     public int getItemViewType(int position) {
 //        return super.getItemViewType(position);
-        mCursor.moveToPosition(position);
+        com.mavroo.dialer.CallLog callLog = mList.get(position);
 
-        int type = mCursor.getInt(mCursor.getColumnIndex(CallLog.Calls.TYPE));
-        //...
-
-        if(type == CallLog.Calls.OUTGOING_TYPE)
-            return VIEWTYPE_OUTGOING;
-
-        return VIEWTYPE_INCOMING;
+        return callLog.direction;
     }
 
     @NonNull
@@ -70,14 +68,15 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
 
     @Override
     public void onBindViewHolder(@NonNull GenericViewHolder holder, int position) {
-        if(!mCursor.moveToPosition(position))
+        com.mavroo.dialer.CallLog callLog = mList.get(position);
+
+        if(callLog == null)
             return;
 
-        String number   = mCursor.getString(mCursor.getColumnIndex(CallLog.Calls.NUMBER));
-        String duration = mCursor.getString(mCursor.getColumnIndex(CallLog.Calls.DURATION));
-        String date     = mCursor.getString(mCursor.getColumnIndex(CallLog.Calls.DATE));
-        int    type     = mCursor.getInt(mCursor.getColumnIndex(CallLog.Calls.TYPE));
-        date            = DateHelper.getInstance().getDateString(Long.valueOf(date));
+        String number   = callLog.number;
+        String duration = callLog.duration;
+        String date     = callLog.date;
+        int    type     = callLog.type;
 
         final Cursor contactCursor = ContactHelper.getByPhoneNumber(mContext, number);
 
@@ -85,7 +84,7 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
 
         holder.setDataOnView(position, number, duration, date, type);
 
-        if(!CallLogHelper.hasLogs(contactCursor)) {
+        if(!VariableManager.hasSize(mList)) {
 
             holder.hasContact   = false;
             holder.contactKey   = null;
@@ -121,13 +120,15 @@ public class CallLogCursorAdapter extends RecyclerView.Adapter<CallLogCursorAdap
             // } else
             //     onBottomReachedListener.onBottomNotReached(position);
 
-            contactCursor.close();
+            if (contactCursor != null) {
+                contactCursor.close();
+            }
         }
     }
 
     @Override
     public int getItemCount() {
-        return mCursor.getCount();
+        return mList.size();
     }
 
     abstract class GenericViewHolder extends RecyclerView.ViewHolder

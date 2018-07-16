@@ -1,13 +1,15 @@
 package com.mavroo.dialer;
 
-public class StringManager {
-    private static final StringManager ourInstance = new StringManager();
+import java.util.List;
 
-    public static StringManager getInstance() {
+public class VariableManager {
+    private static final VariableManager ourInstance = new VariableManager();
+
+    public static VariableManager getInstance() {
         return ourInstance;
     }
 
-    private StringManager() {
+    private VariableManager() {
     }
 
     public static String removeLastChar(String string) {
@@ -26,6 +28,10 @@ public class StringManager {
             return null;
 
         return string.substring(size - 1);
+    }
+
+    public static boolean hasSize(List list) {
+        return list != null && list.size() > 0;
     }
 
 }

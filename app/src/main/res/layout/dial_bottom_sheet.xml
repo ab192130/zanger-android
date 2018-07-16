@@ -10,7 +10,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:behavior_hideable="false"
-    app:behavior_peekHeight="70dp"
+    app:behavior_peekHeight="60dp"
     android:theme="@style/AppTheme"
     android:elevation="60dp"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
@@ -19,12 +19,12 @@
         android:id="@+id/relative_dial_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="15dp"
+        android:clipToPadding="false"
         android:paddingBottom="15dp"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
 
-        android:clipToPadding="false">
+        android:paddingTop="5dp">
 
         <ImageButton
             android:id="@+id/dial_button_action"
@@ -32,6 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
             android:background="@drawable/shape_button_circle"
             android:onClick="onAction"
             android:padding="5dp"
@@ -43,30 +44,29 @@
             android:layout_height="40dp"
 
             android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/dial_button_action"
-
-            android:elevation="12dp"
-            app:cardCornerRadius="20dp"
             android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+
+            android:layout_toLeftOf="@id/dial_button_action"
+            android:elevation="12dp"
             android:innerRadius="0dp"
             android:shape="ring"
-            android:thicknessRatio="1.9" >
+            android:thicknessRatio="1.9"
+            app:cardCornerRadius="20dp">
 
             <EditText
                 android:id="@+id/edit_text_dial_num"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@android:color/transparent"
                 android:focusableInTouchMode="false"
                 android:hint="@string/edit_text_dial_num_hint"
                 android:inputType="textNoSuggestions"
-                android:background="@android:color/transparent"
                 android:maxLines="1"
-                android:textAlignment="center"
-                android:textSize="15sp"
-
                 android:onClick="onClickEditTextDialNum"
-                />
+
+                android:textAlignment="center"
+                android:textSize="15sp" />
 
         </android.support.v7.widget.CardView>
     </RelativeLayout>

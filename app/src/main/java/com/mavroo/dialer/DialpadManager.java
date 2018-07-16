@@ -236,7 +236,7 @@ class DialpadManager {
     }
 
     void clearDialNumber() {
-        String newNumber = StringManager.removeLastChar(getDialNumber());
+        String newNumber = VariableManager.removeLastChar(getDialNumber());
 
         if (newNumber == null)
             return;
