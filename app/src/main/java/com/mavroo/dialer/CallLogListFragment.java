@@ -9,11 +9,14 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class CallLogListFragment extends Fragment{
@@ -21,7 +24,7 @@ public class CallLogListFragment extends Fragment{
     Activity mActivity;
     RecyclerView callLogRecyclerView;
     CallLogAdapter callLogAdapter;
-    Cursor callLogsCursor;
+    Cursor cursorCallLog;
     NestedScrollView nestedScrollView;
     private List<CallLog> listCallLog;
 
@@ -63,36 +66,66 @@ public class CallLogListFragment extends Fragment{
     }
 
     private List<CallLog> getList() {
-        callLogsCursor = CallLogHelper.getCallLogs(mActivity, mActivity.getContentResolver());
+        cursorCallLog = getCursor();
 
         listCallLog = new ArrayList<>();
 
         try {
-            while(callLogsCursor.moveToNext()) {
-                CallLog callLog = new CallLog();
+//            while(callLogsCursor.moveToNext()) {
+            while(cursorCallLog.moveToNext()) {
 
-                String number    = callLogsCursor.getString(callLogsCursor.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
-                String duration  = callLogsCursor.getString(callLogsCursor.getColumnIndex(android.provider.CallLog.Calls.DURATION));
-                String date      = callLogsCursor.getString(callLogsCursor.getColumnIndex(android.provider.CallLog.Calls.DATE));
-                int    direction = callLogsCursor.getInt(callLogsCursor.getColumnIndex(android.provider.CallLog.Calls.TYPE));
-                date             = DateHelper.getInstance().getDateString(Long.valueOf(date));
-
-                callLog.setNumber(number);
-                callLog.setdate(date);
-                callLog.setType(CallLog.TYPE_CALL);
-
-                callLog.setDirection(CallLog.DIRECTION_INCOMING);
-
-                if (direction == android.provider.CallLog.Calls.OUTGOING_TYPE)
-                    callLog.setDirection(CallLog.DIRECTION_OUTGOING);
+                CallLog callLog = new CallLog(cursorCallLog);
 
                 listCallLog.add(callLog);
             }
         } finally {
-            callLogsCursor.close();
+            cursorCallLog.close();
+        }
+
+        List<CallLog> repeatList = new ArrayList<>();
+
+        int repeatCount = 0;
+
+        for (int i = 0; i < listCallLog.size(); i++) {
+            CallLog aLog = listCallLog.get(i);
+            int position = i + 1;
+
+            Log.e("MYAPP:LIST", "i: " + i + ", n: " + aLog.number + ", d: " + aLog.direction);
+
+            if(listCallLog.size() != position) {
+                CallLog nLog = listCallLog.get(i + 1);
+
+                if(aLog.number.equals(nLog.number) && aLog.direction == nLog.direction) {
+                    repeatList.add(aLog);
+                    repeatCount += 1;
+                } else {
+                    aLog.repeats = repeatCount + 1;
+                    repeatCount = 0;
+                    Log.e("MYAPP:REPEATS", "" + aLog.repeats);
+                }
+            } else {
+                aLog.repeats = repeatCount + 1;
+                repeatCount = 0;
+            }
+
+            Log.e("MYAPP:REPEATLIST", "" + TextUtils.join(",", repeatList));
+
+        }
+
+        if (repeatList.size() > 0) {
+
+            for (CallLog rCallLog : repeatList) {
+                listCallLog.remove(rCallLog);
+            }
+
+            repeatList.clear();
         }
 
         return listCallLog;
+    }
+
+    private Cursor getCursor() {
+        return CallLogHelper.getCallLogs(mActivity, mActivity.getContentResolver());
     }
 
     private void scrollToEnd() {

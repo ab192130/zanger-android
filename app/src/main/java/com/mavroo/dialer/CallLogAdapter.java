@@ -76,13 +76,14 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.GenericV
         String number   = callLog.number;
         String duration = callLog.duration;
         String date     = callLog.date;
-        int    type     = callLog.type;
+        int    type     = callLog.status;
+        int    repeats  = callLog.repeats;
 
         final Cursor contactCursor = ContactHelper.getByPhoneNumber(mContext, number);
 
         //number = phoneNumberManager.format(number);
 
-        holder.setDataOnView(position, number, duration, date, type);
+        holder.setDataOnView(position, number, duration, date, type, repeats);
 
         if(!VariableManager.hasSize(mList)) {
 
@@ -133,6 +134,7 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.GenericV
 
     abstract class GenericViewHolder extends RecyclerView.ViewHolder
     {
+        TextView  repeatsTextView;
         ImageView typeImageView;
         TextView  actorTextView;
         TextView  targetTextView;
@@ -152,16 +154,22 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.GenericV
             actorTextView  = view.findViewById(R.id.item_call_log_actor);
             targetTextView = view.findViewById(R.id.item_call_log_target_text);
             dateTextView   = view.findViewById(R.id.item_call_log_date);
+            repeatsTextView = view.findViewById(R.id.item_call_log_repeats);
             photoImageView = view.findViewById(R.id.item_call_log_photo);
             typeImageView  = view.findViewById(R.id.item_call_log_type_image);
         }
 
-        public void setDataOnView(int position, String number, String duration, String date, int type) {
+        void setDataOnView(int position, String number, String duration, String date, int type, int repeats) {
 
             if(photoImageView != null)
                 photoImageView.setImageResource(R.drawable.image_placeholder_face);
 
             dateTextView.setText(date);
+
+            if(repeats > 1) {
+                repeatsTextView.setText("(" + repeats + ")");
+                repeatsTextView.setVisibility(View.VISIBLE);
+            }
 
             this.number = phoneNumberManager.format(number);
 
@@ -196,8 +204,8 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.GenericV
         }
 
         @Override
-        public void setDataOnView(int position, String number, String duration, String date, int type) {
-            super.setDataOnView(position, number, duration, date, type);
+        public void setDataOnView(int position, String number, String duration, String date, int type, int repeats) {
+            super.setDataOnView(position, number, duration, date, type, repeats);
 
             actorTextView.setText(this.number);
 
@@ -240,8 +248,8 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.GenericV
         }
 
         @Override
-        public void setDataOnView(int position, String number, String duration, String date, int type) {
-            super.setDataOnView(position, number, duration, date, type);
+        public void setDataOnView(int position, String number, String duration, String date, int type, int repeats) {
+            super.setDataOnView(position, number, duration, date, type, repeats);
 
             targetTextView.setText(number);
             targetTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);

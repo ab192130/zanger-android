@@ -96,11 +96,11 @@ public class CirclesAdapter extends RecyclerView.Adapter<CirclesAdapter.CircleVi
 
 //                Dialog dialogMy = new InputPhoneNumberDialog(holder.itemView.getContext());
                     if(circleItem.isDefault()) {
-                        if (circleItem.number != null && !circleItem.number.isEmpty()) {
-                            number = circleItem.number;
-                        } else {
+                        if (circleItem.number == null || circleItem.number.isEmpty()) {
                             // @todo: set defaultKey to dialog
                             showDialogChangeNumber(circleItem);
+                        } else {
+                            number = circleItem.number;
                         }
                     }
 

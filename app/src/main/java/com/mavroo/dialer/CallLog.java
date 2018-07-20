@@ -1,5 +1,7 @@
 package com.mavroo.dialer;
 
+import android.database.Cursor;
+
 public class CallLog {
     public static final int TYPE_CALL          = 1;
     public static final int TYPE_MESSAGE       = 2;
@@ -12,10 +14,27 @@ public class CallLog {
     public int type;
     public String duration;
     public int direction;
+    public int status;
     public int repeats;
 
-    public CallLog(String number) {
+    CallLog(String number, int direction, String date) {
         this.number = number;
+        this.direction = direction;
+        this.date = DateHelper.getInstance().getDateString(Long.valueOf(date));
+        this.type = TYPE_CALL;
+    }
+
+    CallLog(Cursor cursor) {
+        this.number    = cursor.getString(cursor.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
+        this.status    = cursor.getInt(cursor.getColumnIndex(android.provider.CallLog.Calls.TYPE));
+        this.date      = cursor.getString(cursor.getColumnIndex(android.provider.CallLog.Calls.DATE));
+        this.date      = DateHelper.getInstance().getDateString(Long.valueOf(this.date));
+        this.type      = TYPE_CALL;
+
+        this.direction = CallLog.DIRECTION_INCOMING;
+
+        if (this.status == android.provider.CallLog.Calls.OUTGOING_TYPE)
+            this.direction = CallLog.DIRECTION_OUTGOING;
     }
 
     CallLog() {

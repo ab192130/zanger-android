@@ -28,17 +28,24 @@
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
             android:text="you called"
 
             android:textColor="@android:color/black"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/item_call_log_repeats"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
             android:textSize="14sp"/>
 
         <ImageView
             android:id="@+id/item_call_log_type_image"
             android:layout_width="15dp"
             android:layout_height="15dp"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="5dp"
             android:layout_gravity="center_vertical"
             android:src="@drawable/image_call_log_out"/>
     </LinearLayout>

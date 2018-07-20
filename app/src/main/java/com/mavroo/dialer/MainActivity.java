@@ -19,6 +19,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+//import com.facebook.stetho.Stetho;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +46,10 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //if(BuildConfig.DEBUG)
+        //Stetho.initializeWithDefaults(this);
+
         //getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(com.mavroo.dialer.R.layout.activity_main);
 

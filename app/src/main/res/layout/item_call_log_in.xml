@@ -77,11 +77,19 @@
                 android:src="@drawable/image_call_log_in" />
 
             <TextView
+                android:id="@+id/item_call_log_repeats"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:textSize="14sp"/>
+
+            <TextView
                 android:id="@+id/item_call_log_target_text"
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
+                android:layout_marginLeft="5dp"
                 android:text="called you"
 
                 android:textColor="@color/colorTextDefault"
