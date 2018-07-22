@@ -80,7 +80,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:paddingBottom="10dp"
-                android:paddingTop="10dp" />
+                android:paddingTop="10dp"
+
+                android:nestedScrollingEnabled="false"/>
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 

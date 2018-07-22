@@ -16,17 +16,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 public class CallLogListFragment extends Fragment{
 
     Activity mActivity;
     RecyclerView callLogRecyclerView;
     CallLogAdapter callLogAdapter;
+    CallLogAdapterNew callLogAdapterNew;
     Cursor cursorCallLog;
     NestedScrollView nestedScrollView;
     private List<CallLog> listCallLog;
+    private List<CallLogNew> listCallLogNew;
 
     @Nullable
     @Override
@@ -37,11 +39,12 @@ public class CallLogListFragment extends Fragment{
 
         callLogRecyclerView = v.findViewById(R.id.recycler_view);
 
-        listCallLog = getList();
+        //listCallLog = getList();
+        listCallLogNew = getListNew2();
 
         nestedScrollView = mActivity.findViewById(R.id.nested_scroll_view);
 
-        if (!showList()) return null;
+        if (!showListNew()) return null;
 
         return v;
     }
@@ -63,6 +66,130 @@ public class CallLogListFragment extends Fragment{
         scrollToEnd();
 
         return true;
+    }
+
+    private boolean showListNew() {
+        if(!VariableManager.hasSize(listCallLogNew))
+            return false;
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mActivity);
+        callLogRecyclerView.setLayoutManager(layoutManager);
+        callLogRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        callLogAdapterNew = new CallLogAdapterNew(mActivity, listCallLogNew);
+        //callLogRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        callLogRecyclerView.setAdapter(callLogAdapterNew);
+        callLogAdapterNew.notifyDataSetChanged();
+
+        // scroll to the end
+        scrollToEnd();
+
+        return true;
+    }
+
+    private List<CallLogNew> getListNew() {
+        listCallLogNew = new ArrayList<>();
+
+        for (int j = 0; j < 7; j++) {
+            CallLogNew callLog = new CallLogNew();
+            callLog.setActorName("Burhan Aghazada");
+
+            Random random = new Random();
+            int max = CallLogNew.DIRECTION_OUTGOING;
+            int min = CallLogNew.DIRECTION_INCOMING;
+            callLog.direction = random.nextInt(max) + min;
+
+            List<CallLogBubble> listBubbles = new ArrayList<>();
+
+            for (int i = 0; i < 2; i++) {
+//            for (int i = 0; i < (random.nextInt(6) + 1); i++) {
+                CallLogBubble bubble = new CallLogBubble();
+                bubble.number = "0505005091";
+                bubble.date = "2h ago";
+
+                if(callLog.direction == CallLogNew.DIRECTION_OUTGOING)
+                    bubble.status = android.provider.CallLog.Calls.OUTGOING_TYPE;
+                else
+                    bubble.status = (random.nextInt(3) + 1);
+
+                bubble.type = CallLogBubble.TYPE_CALL;
+
+                listBubbles.add(bubble);
+            }
+
+            callLog.setBubbles(listBubbles);
+
+            listCallLogNew.add(callLog);
+        }
+
+        return listCallLogNew;
+    }
+
+    private List<CallLogNew> getListNew2() {
+        cursorCallLog = getCursor();
+
+        listCallLogNew = new ArrayList<>();
+
+        try {
+
+            int lastIndex = 0;
+//            while(callLogsCursor.moveToNext()) {
+            while(cursorCallLog.moveToNext()) {
+                String number = cursorCallLog.getString(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
+                int status    = cursorCallLog.getInt(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls.TYPE));
+                String date   = cursorCallLog.getString(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls.DATE));
+                date          = DateHelper.getInstance().getDateString(Long.valueOf(date));
+                int type      = CallLogBubble.TYPE_CALL;
+
+                int direction = CallLog.DIRECTION_INCOMING;
+
+                if (status == android.provider.CallLog.Calls.OUTGOING_TYPE)
+                    direction = CallLog.DIRECTION_OUTGOING;
+
+                /*Log.e("MYAPP:CURSOR_POSITION", "" + cursorCallLog.getPosition());
+
+                CallLogNew callLog = new CallLogNew();
+                callLog.direction = direction;
+                callLog.actorName = number;
+
+                CallLogBubble bubble = new CallLogBubble();
+                bubble.number = number;
+                bubble.date = date;
+                bubble.status = status;
+                bubble.type = CallLogBubble.TYPE_CALL;
+                callLog.addBubble(bubble);*/
+
+                CallLogBubble bubble = new CallLogBubble();
+                bubble.number = number;
+                bubble.date = date;
+                bubble.status = status;
+                bubble.type = CallLogBubble.TYPE_CALL;
+                CallLogNew callLog;
+
+                if(lastIndex == 0)
+                    lastIndex = cursorCallLog.getPosition() - 1;
+
+                if(cursorCallLog.getPosition() > 0
+                        && lastIndex < listCallLogNew.size()
+                        && listCallLogNew.get(lastIndex).actorName.equals(number)
+                        && listCallLogNew.get(lastIndex).direction == direction) {
+                    Log.e("MYAPP:CURSOR_POSITION", "" + cursorCallLog.getPosition());
+                    callLog = listCallLogNew.get(lastIndex);
+                } else {
+                    callLog = new CallLogNew();
+                    callLog.direction = direction;
+                    callLog.actorName = number;
+                    listCallLogNew.add(callLog);
+                }
+
+                callLog.addBubble(bubble);
+                lastIndex = listCallLogNew.indexOf(callLog);
+            }
+        } finally {
+            cursorCallLog.close();
+        }
+
+        return listCallLogNew;
     }
 
     private List<CallLog> getList() {
@@ -130,7 +257,7 @@ public class CallLogListFragment extends Fragment{
 
     private void scrollToEnd() {
 
-        if(!VariableManager.hasSize(listCallLog))
+        if(!VariableManager.hasSize(listCallLogNew))
             return;
 
         nestedScrollView.post(new Runnable() {
@@ -140,6 +267,6 @@ public class CallLogListFragment extends Fragment{
             }
         });
 
-        callLogRecyclerView.scrollToPosition(listCallLog.size() - 1);
+        callLogRecyclerView.scrollToPosition(listCallLogNew.size() - 1);
     }
 }

@@ -2,6 +2,8 @@ package com.mavroo.dialer;
 
 import android.database.Cursor;
 
+import java.util.List;
+
 public class CallLog {
     public static final int TYPE_CALL          = 1;
     public static final int TYPE_MESSAGE       = 2;
@@ -16,6 +18,10 @@ public class CallLog {
     public int direction;
     public int status;
     public int repeats;
+
+    public List<CallLogBubble> items;
+    public String actorName;
+    public String actorNumber;
 
     CallLog(String number, int direction, String date) {
         this.number = number;

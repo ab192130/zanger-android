@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    android:paddingTop="8dp"
+    android:paddingBottom="3dp">
+
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/item_call_log_photo"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        app:civ_border="false"
+        android:layout_weight="1"
+        android:contentDescription="@string/item_call_log_photo"
+
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="20dp"
+
+        android:src="@drawable/image_placeholder_face"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/item_call_log_actor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:text="John Doe"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toRightOf="@+id/item_call_log_photo"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/item_call_log_bubble_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+
+        app:layout_constraintLeft_toRightOf="@+id/item_call_log_photo"
+        app:layout_constraintTop_toBottomOf="@+id/item_call_log_actor">
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

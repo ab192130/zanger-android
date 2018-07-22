@@ -1,61 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+
     android:clipToPadding="false"
-    android:paddingTop="8dp"
-    android:paddingBottom="3dp">
-
-    <LinearLayout
-        android:id="@+id/item_call_log_caller"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="4dp"
-        android:minWidth="200dp"
-        android:gravity="right"
-
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
-
-        <TextView
-            android:id="@+id/item_call_log_actor"
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="you called"
-
-            android:textColor="@android:color/black"
-            android:textSize="14sp"/>
-
-        <TextView
-            android:id="@+id/item_call_log_repeats"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:textSize="14sp"/>
-
-        <ImageView
-            android:id="@+id/item_call_log_type_image"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_marginLeft="5dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/image_call_log_out"/>
-    </LinearLayout>
+    android:paddingBottom="2dp">
 
     <android.support.v7.widget.CardView
         android:id="@+id/item_call_log_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginRight="20dp"
 
         android:layout_marginTop="4dp"
         android:elevation="5dp"
@@ -94,14 +53,14 @@
                 android:layout_width="26dp"
                 android:layout_height="26dp"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/item_call_log_photo"
+                android:src="@drawable/image_placeholder_face"
                 app:civ_border="true"
                 app:civ_border_color="@android:color/white"
-                app:civ_border_width="1dp"
-                android:layout_weight="1"
-                android:layout_marginLeft="8dp"
-                android:contentDescription="@string/item_call_log_photo"
 
-                android:src="@drawable/image_placeholder_face"/>
+                app:civ_border_width="1dp" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
@@ -121,17 +80,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_marginEnd="8dp"
+        android:layout_marginRight="4dp"
         app:layout_constraintBottom_toTopOf="@+id/item_call_log_date"
         app:layout_constraintEnd_toStartOf="@+id/item_call_log_content">
 
         <TextView
             android:id="@+id/item_call_log_type_text"
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="mobile"
-            android:textSize="10sp" />
+            android:textSize="10sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/item_call_log_repeats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="2dp"
+            android:src="@drawable/image_call_log_out" />
 
         <ImageView
             android:layout_width="10dp"
