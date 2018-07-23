@@ -184,6 +184,7 @@ public class CallLogListFragment extends Fragment{
 
                 callLog.addBubble(bubble);
                 lastIndex = listCallLogNew.indexOf(callLog);
+                callLog.setActorContactData(mActivity);
             }
         } finally {
             cursorCallLog.close();

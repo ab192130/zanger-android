@@ -1,6 +1,8 @@
 package com.mavroo.dialer;
 
+import android.content.Context;
 import android.database.Cursor;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -10,22 +12,56 @@ public class CallLogNew {
     public static final int DIRECTION_INCOMING = 1;
     public static final int DIRECTION_OUTGOING = 2;
 
+    public static final int TYPE_LOG  = 1;
+    public static final int TYPE_DATE = 2;
+
     private List<CallLogBubble> bubbles;
     String actorName;
     String actorNumber;
     public int direction;
 
+    String contactKey;
+    String contactName;
+    String contactPhoto;
+
     CallLogNew() {
         this.bubbles = new ArrayList<>();
     }
 
-    CallLogNew(Cursor cursor) {
-        int status = cursor.getInt(cursor.getColumnIndex(android.provider.CallLog.Calls.TYPE));
+    public void setActorContactData(Context context) {
+        if(this.bubbles.size() <= 0)
+            return;
 
-        this.direction = CallLog.DIRECTION_INCOMING;
+        if(this.direction == CallLogNew.DIRECTION_OUTGOING)
+            return;
 
-        if (status == android.provider.CallLog.Calls.OUTGOING_TYPE)
-            this.direction = CallLog.DIRECTION_OUTGOING;
+        String number = this.bubbles.get(0).number;
+
+        final Cursor contactCursor = ContactHelper.getByPhoneNumber(context, number);
+
+        try {
+            if(!contactCursor.moveToFirst())
+                return;
+
+            final String contactKey = contactCursor.getString(contactCursor
+                    .getColumnIndex(ContactsContract.PhoneLookup.LOOKUP_KEY));
+            final String contactName = contactCursor.getString(contactCursor
+                    .getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+            String contactPhoto = contactCursor.getString(contactCursor
+                    .getColumnIndex(ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI));
+
+            this.contactKey = contactKey;
+            this.contactName = contactName;
+            this.contactPhoto = contactPhoto;
+            //holder.setContactData();
+        } finally {
+            if (contactCursor != null)
+                contactCursor.close();
+        }
+    }
+
+    public boolean hasContact() {
+        return (this.contactKey != null);
     }
 
     public List<CallLogBubble> getBubbles() {

@@ -2,6 +2,7 @@ package com.mavroo.dialer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.provider.CallLog;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -76,7 +77,7 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
         TextView tvTarget;
         View mView;
         CallLogNew callLog;
-        TextView tvActor;
+        TextView tvActorName;
         ViewGroup layoutBubble;
 
         GenericViewHolder(View view) {
@@ -84,7 +85,7 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
 
             //...
             mView = view;
-            tvActor = view.findViewById(R.id.item_call_log_actor);
+            tvActorName = view.findViewById(R.id.item_call_log_actor);
             tvTarget = view.findViewById(R.id.item_call_log_target_text);
         }
 
@@ -102,13 +103,37 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
 
     class LeftViewHolder extends GenericViewHolder{
 
+        ImageView ivActorPhoto;
+
         LeftViewHolder(View view) {
             super(view);
+
+            ivActorPhoto = view.findViewById(R.id.item_call_log_photo);
         }
 
         @Override
-        public void setDataOnView(int position, CallLogNew callLog) {
+        public void setDataOnView(int position, final CallLogNew callLog) {
             super.setDataOnView(position, callLog);
+
+            if(ivActorPhoto != null)
+                ivActorPhoto.setOnClickListener(null);
+
+            if(callLog.hasContact()) {
+                if(callLog.contactName != null && tvActorName != null)
+                    tvActorName.setText(callLog.contactName);
+
+                if(ivActorPhoto != null) {
+                    if(callLog.contactPhoto != null)
+                        ivActorPhoto.setImageURI(Uri.parse(callLog.contactPhoto));
+
+                    ivActorPhoto.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            CallLogHelper.showContact(mContext, callLog.contactKey);
+                        }
+                    });
+                }
+            }
 
             //...
             for (int i = 0; i < callLog.getBubbles().size(); i++) {
@@ -125,7 +150,6 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
                 TextView tvDate    = vBubble.findViewById(R.id.item_call_log_date);
                 TextView tvRepeats = vBubble.findViewById(R.id.item_call_log_repeats);
 
-                tvActor.setText(callLog.getActorName());
                 tvDate.setText(bubble.date);
 
                 switch (bubble.status){
@@ -176,7 +200,8 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
 
             //...
             for (int i = 0; i < callLog.getBubbles().size(); i++) {
-                CallLogBubble bubble = callLog.getBubbles().get(i);
+                final CallLogBubble bubble = callLog.getBubbles().get(i);
+                bubble.setTargetContactData(mContext);
 
                 LinearLayout layoutChild = new LinearLayout(mContext);
                 layoutChild.setOrientation(LinearLayout.VERTICAL);
@@ -186,10 +211,31 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
                 TextView tvTarget = vBubble.findViewById(R.id.item_call_log_target_text);
                 TextView tvDate = vBubble.findViewById(R.id.item_call_log_date);
                 TextView tvRepeats = vBubble.findViewById(R.id.item_call_log_repeats);
+                ImageView ivTargetPhoto = vBubble.findViewById(R.id.item_call_log_photo);
 
-                tvActor.setText("You");
+                tvActorName.setText("You");
                 tvTarget.setText(callLog.getActorName());
                 tvDate.setText(bubble.date);
+
+                if(ivTargetPhoto != null)
+                    ivTargetPhoto.setOnClickListener(null);
+
+                if (bubble.hasContact()) {
+                    if(ivTargetPhoto != null) {
+                        if(bubble.contactPhoto != null)
+                            ivTargetPhoto.setImageURI(Uri.parse(bubble.contactPhoto));
+
+                        ivTargetPhoto.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                CallLogHelper.showContact(mContext, bubble.contactKey);
+                            }
+                        });
+                    }
+
+                    if(bubble.contactName != null)
+                        tvTarget.setText(bubble.contactName);
+                }
 
                 if(bubble.repeats > 1)
                     tvRepeats.setText("(" + bubble.repeats + ")");
