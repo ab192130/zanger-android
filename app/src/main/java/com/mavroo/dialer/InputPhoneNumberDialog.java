@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+@Deprecated
 class InputPhoneNumberDialog extends Dialog{
     private static final int DIALOG_THEME_CUSTOM    = R.style.DialogThemeCustom;
     private static final int DEFAULT_LAYOUT_CONTENT = R.layout.input_phone_number;

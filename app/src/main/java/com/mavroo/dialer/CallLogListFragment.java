@@ -27,7 +27,10 @@ public class CallLogListFragment extends Fragment{
     CallLogAdapterNew callLogAdapterNew;
     Cursor cursorCallLog;
     NestedScrollView nestedScrollView;
-    private List<CallLog> listCallLog;
+
+    @Deprecated
+    private List<CallLog>  listCallLog;
+
     private List<CallLogNew> listCallLogNew;
 
     @Nullable
@@ -39,7 +42,6 @@ public class CallLogListFragment extends Fragment{
 
         callLogRecyclerView = v.findViewById(R.id.recycler_view);
 
-        //listCallLog = getList();
         listCallLogNew = getListNew2();
 
         nestedScrollView = mActivity.findViewById(R.id.nested_scroll_view);
@@ -47,25 +49,6 @@ public class CallLogListFragment extends Fragment{
         if (!showListNew()) return null;
 
         return v;
-    }
-
-    private boolean showList() {
-        if(!VariableManager.hasSize(listCallLog))
-            return false;
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mActivity);
-        callLogRecyclerView.setLayoutManager(layoutManager);
-        callLogRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        callLogAdapter = new CallLogAdapter(mActivity, listCallLog);
-        //callLogRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        callLogRecyclerView.setAdapter(callLogAdapter);
-        callLogAdapter.notifyDataSetChanged();
-
-        // scroll to the end
-        scrollToEnd();
-
-        return true;
     }
 
     private boolean showListNew() {
@@ -87,6 +70,94 @@ public class CallLogListFragment extends Fragment{
         return true;
     }
 
+    private List<CallLogNew> getListNew2() {
+        cursorCallLog = getCursor();
+
+        listCallLogNew = new ArrayList<>();
+
+        try {
+
+            int lastIndex = 0;
+
+            while(cursorCallLog.moveToNext()) {
+                String number = cursorCallLog.getString(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
+                int status    = cursorCallLog.getInt(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls.TYPE));
+                String date   = cursorCallLog.getString(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls.DATE));
+                date          = DateHelper.getInstance().getDateString(Long.valueOf(date));
+                int type      = CallLogBubble.TYPE_CALL;
+
+                int direction = CallLogNew.DIRECTION_INCOMING;
+
+                if (status == android.provider.CallLog.Calls.OUTGOING_TYPE)
+                    direction = CallLogNew.DIRECTION_OUTGOING;
+
+                CallLogBubble bubble = new CallLogBubble();
+                bubble.number = number;
+                bubble.date = date;
+                bubble.status = status;
+                bubble.type = CallLogBubble.TYPE_CALL;
+                CallLogNew callLog;
+
+                if(lastIndex == 0)
+                    lastIndex = cursorCallLog.getPosition() - 1;
+
+                /*if(cursorCallLog.getPosition() > 0
+                        && lastIndex < listCallLogNew.size()
+                        &&
+
+                        ((listCallLogNew.get(lastIndex).actorName.equals(number)
+                        && listCallLogNew.get(lastIndex).direction == CallLogNew.DIRECTION_INCOMING) ||
+                        (listCallLogNew.get(lastIndex).direction == CallLogNew.DIRECTION_OUTGOING
+                         && direction == CallLogNew.DIRECTION_OUTGOING))) {*/
+                if(cursorCallLog.getPosition() > 0
+                        && lastIndex < listCallLogNew.size()
+                        && listCallLogNew.get(lastIndex).actorName.equals(number)
+                        && listCallLogNew.get(lastIndex).direction == direction
+                        && direction == CallLogNew.DIRECTION_INCOMING) {
+                    callLog = listCallLogNew.get(lastIndex);
+                } else if (cursorCallLog.getPosition() > 0
+                        && lastIndex < listCallLogNew.size()
+                        && (listCallLogNew.get(lastIndex).direction == direction
+                        && direction == CallLogNew.DIRECTION_OUTGOING)) {
+                    callLog = listCallLogNew.get(lastIndex);
+                } else {
+                    callLog = new CallLogNew();
+                    callLog.direction = direction;
+                    callLog.actorName = number;
+                    listCallLogNew.add(callLog);
+                }
+
+                callLog.addBubble(bubble);
+                lastIndex = listCallLogNew.indexOf(callLog);
+                callLog.setActorContactData(mActivity);
+            }
+        } finally {
+            cursorCallLog.close();
+        }
+
+        return listCallLogNew;
+    }
+
+    private Cursor getCursor() {
+        return CallLogHelper.getCallLogs(mActivity, mActivity.getContentResolver());
+    }
+
+    private void scrollToEnd() {
+
+        if(!VariableManager.hasSize(listCallLogNew))
+            return;
+
+        nestedScrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                nestedScrollView.fullScroll(View.FOCUS_DOWN);
+            }
+        });
+
+        callLogRecyclerView.scrollToPosition(listCallLogNew.size() - 1);
+    }
+
+    @Deprecated
     private List<CallLogNew> getListNew() {
         listCallLogNew = new ArrayList<>();
 
@@ -125,74 +196,7 @@ public class CallLogListFragment extends Fragment{
         return listCallLogNew;
     }
 
-    private List<CallLogNew> getListNew2() {
-        cursorCallLog = getCursor();
-
-        listCallLogNew = new ArrayList<>();
-
-        try {
-
-            int lastIndex = 0;
-//            while(callLogsCursor.moveToNext()) {
-            while(cursorCallLog.moveToNext()) {
-                String number = cursorCallLog.getString(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
-                int status    = cursorCallLog.getInt(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls.TYPE));
-                String date   = cursorCallLog.getString(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls.DATE));
-                date          = DateHelper.getInstance().getDateString(Long.valueOf(date));
-                int type      = CallLogBubble.TYPE_CALL;
-
-                int direction = CallLog.DIRECTION_INCOMING;
-
-                if (status == android.provider.CallLog.Calls.OUTGOING_TYPE)
-                    direction = CallLog.DIRECTION_OUTGOING;
-
-                /*Log.e("MYAPP:CURSOR_POSITION", "" + cursorCallLog.getPosition());
-
-                CallLogNew callLog = new CallLogNew();
-                callLog.direction = direction;
-                callLog.actorName = number;
-
-                CallLogBubble bubble = new CallLogBubble();
-                bubble.number = number;
-                bubble.date = date;
-                bubble.status = status;
-                bubble.type = CallLogBubble.TYPE_CALL;
-                callLog.addBubble(bubble);*/
-
-                CallLogBubble bubble = new CallLogBubble();
-                bubble.number = number;
-                bubble.date = date;
-                bubble.status = status;
-                bubble.type = CallLogBubble.TYPE_CALL;
-                CallLogNew callLog;
-
-                if(lastIndex == 0)
-                    lastIndex = cursorCallLog.getPosition() - 1;
-
-                if(cursorCallLog.getPosition() > 0
-                        && lastIndex < listCallLogNew.size()
-                        && listCallLogNew.get(lastIndex).actorName.equals(number)
-                        && listCallLogNew.get(lastIndex).direction == direction) {
-                    Log.e("MYAPP:CURSOR_POSITION", "" + cursorCallLog.getPosition());
-                    callLog = listCallLogNew.get(lastIndex);
-                } else {
-                    callLog = new CallLogNew();
-                    callLog.direction = direction;
-                    callLog.actorName = number;
-                    listCallLogNew.add(callLog);
-                }
-
-                callLog.addBubble(bubble);
-                lastIndex = listCallLogNew.indexOf(callLog);
-                callLog.setActorContactData(mActivity);
-            }
-        } finally {
-            cursorCallLog.close();
-        }
-
-        return listCallLogNew;
-    }
-
+    @Deprecated
     private List<CallLog> getList() {
         cursorCallLog = getCursor();
 
@@ -252,22 +256,23 @@ public class CallLogListFragment extends Fragment{
         return listCallLog;
     }
 
-    private Cursor getCursor() {
-        return CallLogHelper.getCallLogs(mActivity, mActivity.getContentResolver());
-    }
+    @Deprecated
+    private boolean showList() {
+        if(!VariableManager.hasSize(listCallLog))
+            return false;
 
-    private void scrollToEnd() {
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mActivity);
+        callLogRecyclerView.setLayoutManager(layoutManager);
+        callLogRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        if(!VariableManager.hasSize(listCallLogNew))
-            return;
+        callLogAdapter = new CallLogAdapter(mActivity, listCallLog);
+        //callLogRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        callLogRecyclerView.setAdapter(callLogAdapter);
+        callLogAdapter.notifyDataSetChanged();
 
-        nestedScrollView.post(new Runnable() {
-            @Override
-            public void run() {
-                nestedScrollView.fullScroll(View.FOCUS_DOWN);
-            }
-        });
+        // scroll to the end
+        scrollToEnd();
 
-        callLogRecyclerView.scrollToPosition(listCallLogNew.size() - 1);
+        return true;
     }
 }

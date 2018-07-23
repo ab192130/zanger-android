@@ -16,6 +16,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.GenericViewHolder> {
 
     private final List<com.mavroo.dialer.CallLog> mList;

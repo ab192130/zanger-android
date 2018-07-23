@@ -4,6 +4,7 @@ import android.database.Cursor;
 
 import java.util.List;
 
+@Deprecated
 public class CallLog {
     public static final int TYPE_CALL          = 1;
     public static final int TYPE_MESSAGE       = 2;

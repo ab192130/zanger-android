@@ -115,6 +115,8 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
         public void setDataOnView(int position, final CallLogNew callLog) {
             super.setDataOnView(position, callLog);
 
+            tvActorName.setText(callLog.getActorName());
+
             if(ivActorPhoto != null)
                 ivActorPhoto.setOnClickListener(null);
 
