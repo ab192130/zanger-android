@@ -1,13 +1,21 @@
 package com.mavroo.dialer;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
+import android.provider.BlockedNumberContract;
 import android.provider.CallLog;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -25,11 +33,14 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
     private Activity mActivity;
     private List<CallLogNew> mList;
     private LayoutInflater mInflater;
+    private ClipboardManager clipboardManager;
 
     CallLogAdapterNew(Context context, List<com.mavroo.dialer.CallLogNew> list){
         mContext = context;
         mActivity = (Activity) mContext;
         mList = list;
+
+        clipboardManager = (ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
     }
 
     @Override
@@ -139,13 +150,13 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
 
             //...
             for (int i = 0; i < callLog.getBubbles().size(); i++) {
-                CallLogBubble bubble = callLog.getBubbles().get(i);
+                final CallLogBubble bubble = callLog.getBubbles().get(i);
 
                 LinearLayout layoutChild = new LinearLayout(mContext);
                 layoutChild.setOrientation(LinearLayout.VERTICAL);
                 layoutChild.setGravity(Gravity.FILL_VERTICAL);
 
-                View vBubble = mInflater.inflate(R.layout.item_call_log_in_child, layoutChild, false);
+                final View vBubble = mInflater.inflate(R.layout.item_call_log_in_child, layoutChild, false);
                 ImageView ivType1   = vBubble.findViewById(R.id.item_call_log_type_image);
                 ImageView ivType   = vBubble.findViewById(R.id.item_call_log_type_image_sm);
                 TextView tvTarget  = vBubble.findViewById(R.id.item_call_log_target_text);
@@ -193,6 +204,56 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
                     }
                 });
 
+                vBubble.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        vBubble.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+                            @Override
+                            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                                MenuItem menuCopy    = menu.add("Copy number");
+                                menuCopy.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                                    @Override
+                                    public boolean onMenuItemClick(MenuItem item) {
+                                        ClipData clip = ClipData.newPlainText("label", bubble.number);
+                                        clipboardManager.setPrimaryClip(clip);
+                                        return false;
+                                    }
+                                });
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    MenuItem menuBlock = menu.add("Block number");
+                                    menuBlock.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                                        @RequiresApi(api = Build.VERSION_CODES.N)
+                                        @Override
+                                        public boolean onMenuItemClick(MenuItem item) {
+                                            ContentValues values = new ContentValues();
+                                            values.put(BlockedNumberContract.BlockedNumbers.COLUMN_ORIGINAL_NUMBER, bubble.number);
+                                            mActivity.getContentResolver().insert(BlockedNumberContract.BlockedNumbers.CONTENT_URI, values);
+                                            return false;
+                                        }
+                                    });
+                                }
+
+                                MenuItem menuDelete  = menu.add("Delete");
+                                menuDelete.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                                    @Override
+                                    public boolean onMenuItemClick(MenuItem item) {
+                                        for (int i = 0; i < bubble.keys.size(); i++) {
+                                            CallLogHelper.deleteById(mActivity, bubble.keys.get(i));
+                                        }
+
+                                        callLog.getBubbles().remove(bubble);
+                                        layoutBubble.removeView(vBubble);
+                                        return false;
+                                    }
+                                });
+                            }
+                        });
+
+                        return false;
+                    }
+                });
+
                 layoutBubble.addView(vBubble);
             }
         }
@@ -212,7 +273,7 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
         }
 
         @Override
-        public void setDataOnView(int position, CallLogNew callLog) {
+        public void setDataOnView(int position, final CallLogNew callLog) {
             super.setDataOnView(position, callLog);
 
             //...
@@ -224,7 +285,7 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
                 layoutChild.setOrientation(LinearLayout.VERTICAL);
                 layoutChild.setGravity(Gravity.FILL_VERTICAL);
 
-                View vBubble = mInflater.inflate(R.layout.item_call_log_out_child, layoutChild, false);
+                final View vBubble = mInflater.inflate(R.layout.item_call_log_out_child, layoutChild, false);
                 TextView tvTarget = vBubble.findViewById(R.id.item_call_log_target_text);
                 TextView tvDate = vBubble.findViewById(R.id.item_call_log_bubble_date);
                 TextView tvRepeats = vBubble.findViewById(R.id.item_call_log_repeats);
@@ -269,6 +330,56 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
                             layoutExtra.setVisibility(View.GONE);
                         else
                             layoutExtra.setVisibility(View.VISIBLE);
+                    }
+                });
+
+                vBubble.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        vBubble.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+                            @Override
+                            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                                MenuItem menuCopy    = menu.add("Copy number");
+                                menuCopy.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                                    @Override
+                                    public boolean onMenuItemClick(MenuItem item) {
+                                        ClipData clip = ClipData.newPlainText("label", bubble.number);
+                                        clipboardManager.setPrimaryClip(clip);
+                                        return false;
+                                    }
+                                });
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    MenuItem menuBlock = menu.add("Block number");
+                                    menuBlock.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                                        @RequiresApi(api = Build.VERSION_CODES.N)
+                                        @Override
+                                        public boolean onMenuItemClick(MenuItem item) {
+                                            ContentValues values = new ContentValues();
+                                            values.put(BlockedNumberContract.BlockedNumbers.COLUMN_ORIGINAL_NUMBER, bubble.number);
+                                            mActivity.getContentResolver().insert(BlockedNumberContract.BlockedNumbers.CONTENT_URI, values);
+                                            return false;
+                                        }
+                                    });
+                                }
+
+                                MenuItem menuDelete  = menu.add("Delete");
+                                menuDelete.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                                    @Override
+                                    public boolean onMenuItemClick(MenuItem item) {
+                                        for (int i = 0; i < bubble.keys.size(); i++) {
+                                            CallLogHelper.deleteById(mActivity, bubble.keys.get(i));
+                                        }
+
+                                        callLog.getBubbles().remove(bubble);
+                                        layoutBubble.removeView(vBubble);
+                                        return false;
+                                    }
+                                });
+                            }
+                        });
+
+                        return false;
                     }
                 });
 

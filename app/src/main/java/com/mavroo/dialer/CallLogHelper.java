@@ -20,7 +20,8 @@ import java.util.List;
 
 public class CallLogHelper {
     private static final CallLogHelper ourInstance = new CallLogHelper();
-    private static final int CODE_REQUEST_PERMISSION_CALLLOG_READ = 109;
+    private static final int CODE_REQUEST_PERMISSION_CALLLOG_READ  = 109;
+    private static final int CODE_REQUEST_PERMISSION_CALLLOG_WRITE = 110;
 
     public static CallLogHelper getInstance() {
         return ourInstance;
@@ -41,7 +42,7 @@ public class CallLogHelper {
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
 
-            String[] permissions = new String[] {Manifest.permission.READ_CALL_LOG};
+            String[] permissions = new String[]{Manifest.permission.READ_CALL_LOG};
             ActivityCompat.requestPermissions(activity, permissions, CODE_REQUEST_PERMISSION_CALLLOG_READ);
 
             return null;
@@ -68,16 +69,16 @@ public class CallLogHelper {
 
     public static Cursor getContactByPhoneNumber(Context context, String phoneNumber) {
 
-        if(phoneNumber != null && phoneNumber.length() > 0) {
+        if (phoneNumber != null && phoneNumber.length() > 0) {
             Uri contactsUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
-            String[] projection = new String[] {
+            String[] projection = new String[]{
                     ContactsContract.PhoneLookup.LOOKUP_KEY,
                     ContactsContract.PhoneLookup.DISPLAY_NAME,
                     ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI};
             Cursor cursor = context.getContentResolver()
                     .query(contactsUri, projection, null, null, null);
 
-            if(cursor != null) {
+            if (cursor != null) {
                 return cursor;
             }
         }
@@ -94,5 +95,27 @@ public class CallLogHelper {
 
     public static boolean hasLogs(List<com.mavroo.dialer.CallLog> callLogs) {
         return callLogs != null && callLogs.size() > 0;
+    }
+
+    public static void deleteById(Activity activity, String id) {
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+
+            ActivityCompat.requestPermissions(
+                    activity,
+                    new String[] {Manifest.permission.WRITE_CALL_LOG},
+                    CODE_REQUEST_PERMISSION_CALLLOG_WRITE);
+            return;
+        }
+
+        String query = "+_ID=" + id;
+
+        activity.getContentResolver().delete(CallLog.Calls.CONTENT_URI, query, null);
     }
 }

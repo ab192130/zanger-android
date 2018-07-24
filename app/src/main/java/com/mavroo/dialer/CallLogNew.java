@@ -82,6 +82,7 @@ public class CallLogNew {
                         && aBubble.type == CallLogBubble.TYPE_CALL
                         && nBubble.type == CallLogBubble.TYPE_CALL) {
                     aBubble.repeats = aBubble.repeats + 1;
+                    aBubble.keys.add(nBubble.keys.get(0));
                     bubbles.remove(nBubble);
                 } else {
                     offset++;

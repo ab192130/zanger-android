@@ -4,6 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class CallLogBubble {
     public static final int TYPE_CALL          = 1;
     public static final int TYPE_MESSAGE       = 2;
@@ -19,8 +22,12 @@ class CallLogBubble {
     public String contactName;
     public String contactPhoto;
 
+    public List<String> keys;
+    public String key; // _ID from CallLog Cursor
+
     CallLogBubble() {
         this.repeats = 1;
+        this.keys = new ArrayList<>();
     }
 
     public void setTargetContactData(Context context) {

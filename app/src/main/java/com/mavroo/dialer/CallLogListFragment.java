@@ -80,6 +80,7 @@ public class CallLogListFragment extends Fragment{
             int lastIndex = 0;
 
             while(cursorCallLog.moveToNext()) {
+                String key       = cursorCallLog.getString(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls._ID));
                 String number    = cursorCallLog.getString(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
                 int status       = cursorCallLog.getInt(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls.TYPE));
                 String duration  = cursorCallLog.getString(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls.DURATION));
@@ -93,11 +94,13 @@ public class CallLogListFragment extends Fragment{
                     direction = CallLogNew.DIRECTION_OUTGOING;
 
                 CallLogBubble bubble = new CallLogBubble();
-                bubble.number = number;
-                bubble.date = date;
-                bubble.status = status;
-                bubble.type = CallLogBubble.TYPE_CALL;
+                bubble.number   = number;
+                bubble.date     = date;
+                bubble.status   = status;
+                bubble.type     = CallLogBubble.TYPE_CALL;
                 bubble.duration = duration;
+//                bubble.key = key;
+                bubble.keys.add(key);
                 CallLogNew callLog;
 
                 if(lastIndex == 0)
