@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Deprecated
@@ -154,7 +153,7 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.GenericV
 
             actorTextView  = view.findViewById(R.id.item_call_log_actor);
             targetTextView = view.findViewById(R.id.item_call_log_target_text);
-            dateTextView   = view.findViewById(R.id.item_call_log_date);
+            dateTextView   = view.findViewById(R.id.item_call_log_bubble_date);
             repeatsTextView = view.findViewById(R.id.item_call_log_repeats);
             photoImageView = view.findViewById(R.id.item_call_log_photo);
             typeImageView  = view.findViewById(R.id.item_call_log_type_image);

@@ -149,10 +149,13 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
                 ImageView ivType1   = vBubble.findViewById(R.id.item_call_log_type_image);
                 ImageView ivType   = vBubble.findViewById(R.id.item_call_log_type_image_sm);
                 TextView tvTarget  = vBubble.findViewById(R.id.item_call_log_target_text);
-                TextView tvDate    = vBubble.findViewById(R.id.item_call_log_date);
+                TextView tvDate    = vBubble.findViewById(R.id.item_call_log_bubble_date);
                 TextView tvRepeats = vBubble.findViewById(R.id.item_call_log_repeats);
+                TextView tvDuration = vBubble.findViewById(R.id.item_call_log_bubble_duration);
+                final LinearLayout layoutExtra = vBubble.findViewById(R.id.item_cal_log_bubble_extra);
 
                 tvDate.setText(bubble.date);
+                tvDuration.setText(bubble.getDurationText());
 
                 switch (bubble.status){
                     case CallLog.Calls.MISSED_TYPE:
@@ -176,7 +179,19 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
                 }
 
                 if(bubble.repeats > 1)
-                    tvRepeats.setText("(" + bubble.repeats + ")");
+                    tvRepeats.setText(bubble.getRepeatsText());
+
+                vBubble.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int visibility = layoutExtra.getVisibility();
+
+                        if (visibility == View.VISIBLE)
+                            layoutExtra.setVisibility(View.GONE);
+                        else
+                            layoutExtra.setVisibility(View.VISIBLE);
+                    }
+                });
 
                 layoutBubble.addView(vBubble);
             }
@@ -211,13 +226,16 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
 
                 View vBubble = mInflater.inflate(R.layout.item_call_log_out_child, layoutChild, false);
                 TextView tvTarget = vBubble.findViewById(R.id.item_call_log_target_text);
-                TextView tvDate = vBubble.findViewById(R.id.item_call_log_date);
+                TextView tvDate = vBubble.findViewById(R.id.item_call_log_bubble_date);
                 TextView tvRepeats = vBubble.findViewById(R.id.item_call_log_repeats);
+                TextView tvDuration = vBubble.findViewById(R.id.item_call_log_bubble_duration);
                 ImageView ivTargetPhoto = vBubble.findViewById(R.id.item_call_log_photo);
+                final LinearLayout layoutExtra = vBubble.findViewById(R.id.item_cal_log_bubble_extra);
 
                 tvActorName.setText("You");
-                tvTarget.setText(callLog.getActorName());
+                tvTarget.setText(bubble.number);
                 tvDate.setText(bubble.date);
+                tvDuration.setText(bubble.getDurationText());
 
                 if(ivTargetPhoto != null)
                     ivTargetPhoto.setOnClickListener(null);
@@ -240,7 +258,19 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
                 }
 
                 if(bubble.repeats > 1)
-                    tvRepeats.setText("(" + bubble.repeats + ")");
+                    tvRepeats.setText(bubble.getRepeatsText());
+
+                vBubble.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int visibility = layoutExtra.getVisibility();
+
+                        if (visibility == View.VISIBLE)
+                            layoutExtra.setVisibility(View.GONE);
+                        else
+                            layoutExtra.setVisibility(View.VISIBLE);
+                    }
+                });
 
                 layoutBubble.addView(vBubble);
             }

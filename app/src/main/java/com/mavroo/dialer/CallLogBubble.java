@@ -52,4 +52,12 @@ class CallLogBubble {
     public boolean hasContact() {
         return (this.contactKey != null);
     }
+
+    public String getDurationText() {
+        return this.duration + " sec";
+    }
+
+    public String getRepeatsText() {
+        return "(" + this.repeats + ")";
+    }
 }

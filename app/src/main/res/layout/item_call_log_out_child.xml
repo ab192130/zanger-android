@@ -65,7 +65,7 @@
     </android.support.v7.widget.CardView>
 
     <TextView
-        android:id="@+id/item_call_log_date"
+        android:id="@+id/item_call_log_bubble_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="2dp"
@@ -81,7 +81,7 @@
         android:layout_height="wrap_content"
 
         android:layout_marginRight="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/item_call_log_date"
+        app:layout_constraintBottom_toTopOf="@+id/item_call_log_bubble_date"
         app:layout_constraintEnd_toStartOf="@+id/item_call_log_content">
 
         <TextView
@@ -112,6 +112,22 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="2dp"
             android:src="@drawable/image_call_log_mobile" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/item_cal_log_bubble_extra"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/item_call_log_content"
+        app:layout_constraintRight_toRightOf="parent"
+        android:gravity="right"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/item_call_log_bubble_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="hmmm"/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

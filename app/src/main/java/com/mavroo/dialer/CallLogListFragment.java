@@ -80,11 +80,12 @@ public class CallLogListFragment extends Fragment{
             int lastIndex = 0;
 
             while(cursorCallLog.moveToNext()) {
-                String number = cursorCallLog.getString(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
-                int status    = cursorCallLog.getInt(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls.TYPE));
-                String date   = cursorCallLog.getString(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls.DATE));
-                date          = DateHelper.getInstance().getDateString(Long.valueOf(date));
-                int type      = CallLogBubble.TYPE_CALL;
+                String number    = cursorCallLog.getString(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
+                int status       = cursorCallLog.getInt(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls.TYPE));
+                String duration  = cursorCallLog.getString(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls.DURATION));
+                String date      = cursorCallLog.getString(cursorCallLog.getColumnIndex(android.provider.CallLog.Calls.DATE));
+                date             = DateHelper.getInstance().getDateString(Long.valueOf(date));
+                int type         = CallLogBubble.TYPE_CALL;
 
                 int direction = CallLogNew.DIRECTION_INCOMING;
 
@@ -96,6 +97,7 @@ public class CallLogListFragment extends Fragment{
                 bubble.date = date;
                 bubble.status = status;
                 bubble.type = CallLogBubble.TYPE_CALL;
+                bubble.duration = duration;
                 CallLogNew callLog;
 
                 if(lastIndex == 0)
