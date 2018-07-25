@@ -23,7 +23,6 @@ class CallLogBubble {
     public String contactPhoto;
 
     public List<String> keys;
-    public String key; // _ID from CallLog Cursor
 
     CallLogBubble() {
         this.repeats = 1;

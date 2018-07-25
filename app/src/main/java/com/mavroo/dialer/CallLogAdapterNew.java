@@ -242,6 +242,11 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
                                             CallLogHelper.deleteById(mActivity, bubble.keys.get(i));
                                         }
 
+                                        if(callLog.getBubbles().size() == 1) {
+                                            //...
+                                            mList.remove(callLog);
+                                        }
+
                                         callLog.getBubbles().remove(bubble);
                                         layoutBubble.removeView(vBubble);
                                         return false;
@@ -369,6 +374,11 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
                                     public boolean onMenuItemClick(MenuItem item) {
                                         for (int i = 0; i < bubble.keys.size(); i++) {
                                             CallLogHelper.deleteById(mActivity, bubble.keys.get(i));
+                                        }
+
+                                        if(callLog.getBubbles().size() == 1) {
+                                            //...
+                                            mList.remove(callLog);
                                         }
 
                                         callLog.getBubbles().remove(bubble);

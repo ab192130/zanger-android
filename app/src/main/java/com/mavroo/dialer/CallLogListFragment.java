@@ -99,12 +99,8 @@ public class CallLogListFragment extends Fragment{
                 bubble.status   = status;
                 bubble.type     = CallLogBubble.TYPE_CALL;
                 bubble.duration = duration;
-//                bubble.key = key;
                 bubble.keys.add(key);
                 CallLogNew callLog;
-
-                if(lastIndex == 0)
-                    lastIndex = cursorCallLog.getPosition() - 1;
 
                 /*if(cursorCallLog.getPosition() > 0
                         && lastIndex < listCallLogNew.size()
@@ -122,18 +118,19 @@ public class CallLogListFragment extends Fragment{
                     callLog = listCallLogNew.get(lastIndex);
                 } else if (cursorCallLog.getPosition() > 0
                         && lastIndex < listCallLogNew.size()
-                        && (listCallLogNew.get(lastIndex).direction == direction
-                        && direction == CallLogNew.DIRECTION_OUTGOING)) {
+                        && listCallLogNew.get(lastIndex).direction == direction
+                        && direction == CallLogNew.DIRECTION_OUTGOING) {
                     callLog = listCallLogNew.get(lastIndex);
                 } else {
                     callLog = new CallLogNew();
                     callLog.direction = direction;
                     callLog.actorName = number;
                     listCallLogNew.add(callLog);
+                    lastIndex = listCallLogNew.indexOf(callLog);
                 }
 
                 callLog.addBubble(bubble);
-                lastIndex = listCallLogNew.indexOf(callLog);
+//                lastIndex = listCallLogNew.indexOf(callLog);
                 callLog.setActorContactData(mActivity);
             }
         } finally {
