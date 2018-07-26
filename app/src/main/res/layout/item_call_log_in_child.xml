@@ -72,20 +72,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="6dp"
         app:layout_constraintBottom_toTopOf="@+id/item_call_log_bubble_date"
         app:layout_constraintStart_toEndOf="@+id/item_call_log_content">
 
         <ImageView
             android:id="@+id/item_call_log_bubble_device"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
+            android:visibility="gone"
+            android:layout_width="11dp"
+            android:layout_height="11dp"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="2dp"
-            android:src="@drawable/image_call_log_mobile" />
+            android:src="@drawable/image_icon_mobile" />
 
         <ImageView
             android:id="@+id/item_call_log_type_image_sm"
+            android:visibility="gone"
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_gravity="center_vertical"

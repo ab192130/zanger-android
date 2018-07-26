@@ -116,10 +116,13 @@ class CallLogBubble {
 
         switch (contactDevice) {
             case ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE:
-                name = R.drawable.image_call_log_mobile;
+                name = R.drawable.image_icon_mobile;
+                break;
+            case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
+                name = R.drawable.image_icon_home;
                 break;
             default:
-                name = R.drawable.image_call_log_mobile;
+                name = R.drawable.ic_phone_white;
                 break;
         }
 
