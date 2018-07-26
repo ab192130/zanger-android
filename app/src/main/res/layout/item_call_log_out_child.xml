@@ -107,6 +107,7 @@
             android:src="@drawable/image_call_log_out" />
 
         <ImageView
+            android:id="@+id/item_call_log_bubble_device"
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_gravity="center_vertical"

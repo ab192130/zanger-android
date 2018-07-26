@@ -125,13 +125,23 @@ public class CallLogListFragment extends Fragment{
                     callLog = new CallLogNew();
                     callLog.direction = direction;
                     callLog.actorName = number;
+
                     listCallLogNew.add(callLog);
                     lastIndex = listCallLogNew.indexOf(callLog);
+
+                    // @todo: add contact key as an actor key, if direction is left ;
                 }
+
+                if(direction == CallLogNew.DIRECTION_INCOMING)
+                    bubble.setMiniContactData(mActivity);
+                else
+                    bubble.setContactData(mActivity);
 
                 callLog.addBubble(bubble);
 //                lastIndex = listCallLogNew.indexOf(callLog);
-                callLog.setActorContactData(mActivity);
+
+                if(!callLog.hasContact() && direction == CallLogNew.DIRECTION_INCOMING)
+                    callLog.setActorContactData(mActivity); //@todo
             }
         } finally {
             cursorCallLog.close();

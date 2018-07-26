@@ -17,11 +17,9 @@ public class ContactHelper {
         return ourInstance;
     }
 
-    private ContactHelper() {
-    }
+    private ContactHelper() {}
 
-    public static Cursor getByPhoneNumber(Context context, String phoneNumber) {
-
+    private static boolean checkPermission(Context context) {
         if(ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
 
@@ -31,22 +29,48 @@ public class ContactHelper {
                     permissions,
                     CODE_REQUEST_PERMISSION_CONTACTS_READ);
 
-            return null;
+            return true;
         }
+        return false;
+    }
+
+    public static Cursor getByPhoneNumber(Context context, String phoneNumber) {
+
+        if (checkPermission(context)) return null;
 
         if(phoneNumber != null && phoneNumber.length() > 0) {
             Uri contactsUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
             String[] projection = new String[] {
                     ContactsContract.PhoneLookup.LOOKUP_KEY,
+                    ContactsContract.PhoneLookup.TYPE,
                     ContactsContract.PhoneLookup.DISPLAY_NAME,
                     ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI,
                     ContactsContract.PhoneLookup.PHOTO_URI};
             Cursor cursor = context.getContentResolver()
                     .query(contactsUri, projection, null, null, null);
 
-            if(cursor != null) {
+            if(cursor != null)
                 return cursor;
-            }
+        }
+
+        return null;
+    }
+
+    public static Cursor getDeviceByPhoneNumber(Context context, String phoneNumber) {
+
+        if (checkPermission(context)) return null;
+
+        if(phoneNumber != null && phoneNumber.length() > 0) {
+            Uri contactsUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+            String[] projection = new String[] {
+                    ContactsContract.PhoneLookup.LOOKUP_KEY,
+                    ContactsContract.PhoneLookup.TYPE
+            };
+            Cursor cursor = context.getContentResolver()
+                    .query(contactsUri, projection, null, null, null);
+
+            if(cursor != null)
+                return cursor;
         }
 
         return null;

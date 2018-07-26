@@ -157,8 +157,9 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
                 layoutChild.setGravity(Gravity.FILL_VERTICAL);
 
                 final View vBubble = mInflater.inflate(R.layout.item_call_log_in_child, layoutChild, false);
-                ImageView ivType1   = vBubble.findViewById(R.id.item_call_log_type_image);
+                ImageView ivType1  = vBubble.findViewById(R.id.item_call_log_type_image);
                 ImageView ivType   = vBubble.findViewById(R.id.item_call_log_type_image_sm);
+                ImageView ivDevice = vBubble.findViewById(R.id.item_call_log_bubble_device);
                 TextView tvTarget  = vBubble.findViewById(R.id.item_call_log_target_text);
                 TextView tvDate    = vBubble.findViewById(R.id.item_call_log_bubble_date);
                 TextView tvRepeats = vBubble.findViewById(R.id.item_call_log_repeats);
@@ -189,8 +190,13 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
                         break;
                 }
 
+                if(bubble.hasContact()) {
+                    if(bubble.contactDevice != -1) //@todo
+                        ivDevice.setImageResource(bubble.getDeviceIconRes());
+                }
+
                 if(bubble.repeats > 1)
-                    tvRepeats.setText(bubble.getRepeatsText());
+                tvRepeats.setText(bubble.getRepeatsText());
 
                 vBubble.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -284,7 +290,6 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
             //...
             for (int i = 0; i < callLog.getBubbles().size(); i++) {
                 final CallLogBubble bubble = callLog.getBubbles().get(i);
-                bubble.setTargetContactData(mContext);
 
                 LinearLayout layoutChild = new LinearLayout(mContext);
                 layoutChild.setOrientation(LinearLayout.VERTICAL);
@@ -296,6 +301,7 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
                 TextView tvRepeats = vBubble.findViewById(R.id.item_call_log_repeats);
                 TextView tvDuration = vBubble.findViewById(R.id.item_call_log_bubble_duration);
                 ImageView ivTargetPhoto = vBubble.findViewById(R.id.item_call_log_photo);
+                ImageView ivDevice = vBubble.findViewById(R.id.item_call_log_bubble_device);
                 final LinearLayout layoutExtra = vBubble.findViewById(R.id.item_cal_log_bubble_extra);
 
                 tvActorName.setText("You");
@@ -321,6 +327,9 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
 
                     if(bubble.contactName != null)
                         tvTarget.setText(bubble.contactName);
+
+                    if(bubble.contactDevice != -1) //@todo
+                        ivDevice.setImageResource(bubble.getDeviceIconRes());
                 }
 
                 if(bubble.repeats > 1)

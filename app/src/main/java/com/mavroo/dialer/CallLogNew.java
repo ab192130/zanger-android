@@ -3,7 +3,6 @@ package com.mavroo.dialer;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +22,7 @@ public class CallLogNew {
     String contactKey;
     String contactName;
     String contactPhoto;
+    String contactDevice;
 
     CallLogNew() {
         this.bubbles = new ArrayList<>();
@@ -49,10 +49,13 @@ public class CallLogNew {
                     .getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
             String contactPhoto = contactCursor.getString(contactCursor
                     .getColumnIndex(ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI));
+            String contactType = contactCursor.getString(contactCursor
+                    .getColumnIndex(ContactsContract.PhoneLookup.TYPE));
 
-            this.contactKey = contactKey;
-            this.contactName = contactName;
+            this.contactKey   = contactKey;
+            this.contactName  = contactName;
             this.contactPhoto = contactPhoto;
+            this.contactDevice = contactType;
             //holder.setContactData();
         } finally {
             if (contactCursor != null)
@@ -83,6 +86,8 @@ public class CallLogNew {
                         && nBubble.type == CallLogBubble.TYPE_CALL) {
                     aBubble.repeats = aBubble.repeats + 1;
                     aBubble.keys.add(nBubble.keys.get(0));
+                    aBubble.date = nBubble.date;
+                    aBubble.duration = nBubble.duration;
                     bubbles.remove(nBubble);
                 } else {
                     offset++;
