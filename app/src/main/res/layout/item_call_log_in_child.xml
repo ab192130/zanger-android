@@ -79,8 +79,8 @@
         <ImageView
             android:id="@+id/item_call_log_bubble_device"
             android:visibility="gone"
-            android:layout_width="11dp"
-            android:layout_height="11dp"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="2dp"
             android:src="@drawable/image_icon_mobile" />

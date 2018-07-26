@@ -121,8 +121,17 @@ class CallLogBubble {
             case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
                 name = R.drawable.image_icon_home;
                 break;
+            case ContactsContract.CommonDataKinds.Phone.TYPE_WORK:
+                name = R.drawable.image_icon_building;
+                break;
+            case ContactsContract.CommonDataKinds.Phone.TYPE_FAX_HOME:
+                name = R.drawable.image_icon_fax;
+                break;
+            case ContactsContract.CommonDataKinds.Phone.TYPE_FAX_WORK:
+                name = R.drawable.image_icon_fax;
+                break;
             default:
-                name = R.drawable.ic_phone_white;
+                name = -1;
                 break;
         }
 
