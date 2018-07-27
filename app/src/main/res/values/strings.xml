@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Zanger</string>
+    <string name="app_name_low">zanger</string>
+
     <string name="bottom_sheet_peek">sheet_peek</string>
     <string name="bottom_sheet_content">sheet_content</string>
     <string name="dial_num_one">1</string>
@@ -28,4 +30,7 @@
     <string name="call_log_action_incoming">called you</string>
     <string name="call_log_action_missed">couldn\'t reach you</string>
     <string name="call_log_action_rejected">was rejected</string>
+    <string name="pref_build_version">Build version</string>
+    <string name="pref_privacy">Privacy Policy</string>
+    <string name="pref_terms">Terms of Use</string>
 </resources>
