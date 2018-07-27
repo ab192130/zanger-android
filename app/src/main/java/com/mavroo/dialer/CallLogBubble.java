@@ -96,21 +96,37 @@ class CallLogBubble {
 
     // @todo
     public String getDeviceName() {
-        String name = null;
+        String name;
 
         switch (contactDevice) {
             case ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE:
                 name = "mobile";
                 break;
+            case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
+                name = "home";
+                break;
+            case ContactsContract.CommonDataKinds.Phone.TYPE_WORK:
+                name = "work";
+                break;
+            case ContactsContract.CommonDataKinds.Phone.TYPE_FAX_HOME:
+                name = "fax home";
+                break;
+            case ContactsContract.CommonDataKinds.Phone.TYPE_FAX_WORK:
+                name = "fax work";
+                break;
             default:
-                name = "other";
+                name = null;
                 break;
         }
 
         return name;
     }
 
-    // @todo
+    /**
+     * Get image icon resource id for displaying type of contact number.
+     * @return Icon Resource Id
+     * @todo rename "device" to "place"
+     */
     public int getDeviceIconRes() {
         int name;
 

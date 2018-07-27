@@ -191,7 +191,7 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
                 }
 
                 if(bubble.hasContact()) {
-                    if(bubble.contactDevice != -1) {
+                    if(bubble.contactDevice != -1 && bubble.getDeviceIconRes() != -1) {
                         ivDevice.setImageResource(bubble.getDeviceIconRes());
                         ivDevice.setVisibility(View.VISIBLE);
                     }
@@ -330,7 +330,7 @@ public class CallLogAdapterNew extends RecyclerView.Adapter<CallLogAdapterNew.Ge
                     if(bubble.contactName != null)
                         tvTarget.setText(bubble.contactName);
 
-                    if(bubble.contactDevice != -1) {
+                    if(bubble.contactDevice != -1 && bubble.getDeviceIconRes() != -1) {
                         ivDevice.setImageResource(bubble.getDeviceIconRes());
                         ivDevice.setVisibility(View.VISIBLE);
                     }
