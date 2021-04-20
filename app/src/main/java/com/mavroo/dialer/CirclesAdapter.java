@@ -2,6 +2,7 @@ package com.mavroo.dialer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -52,7 +53,7 @@ public class CirclesAdapter extends RecyclerView.Adapter<CirclesAdapter.CircleVi
     }
 
     private String getSettingsNumber(CircleItem item) {
-        return settingsManager.read(item.getTypeName(), "");
+        return settingsManager.read(item.getDefaultTypeName(), "");
     }
 
     @Override
@@ -65,7 +66,12 @@ public class CirclesAdapter extends RecyclerView.Adapter<CirclesAdapter.CircleVi
             item.number = settingNumber;
 
         holder.circleTitle.setText(item.name);
-        holder.circleImage.setImageResource(item.imageId);
+
+        if(item.type == CircleItem.TYPE_CONTACT)
+            holder.circleImage.setImageURI(Uri.parse(item.imageUri));
+        else
+            holder.circleImage.setImageResource(item.imageId);
+
         holder.circleItem = item;
     }
 
@@ -102,6 +108,11 @@ public class CirclesAdapter extends RecyclerView.Adapter<CirclesAdapter.CircleVi
                         } else {
                             number = circleItem.number;
                         }
+                    } else if (circleItem.hasContact()){
+                        DialpadManager dialpadManager = ((MainActivity) mActivity).dialpadManager;
+                        dialpadManager.setDialNumber("0505005091");
+                        dialpadManager.previewNumber();
+                        dialpadManager.openDialpad();
                     }
 
                     if(number != null && !number.isEmpty())
@@ -123,7 +134,7 @@ public class CirclesAdapter extends RecyclerView.Adapter<CirclesAdapter.CircleVi
                     if(requestCode == CirclesAdapter.CODE_REQUEST_DEFAULT_NUMBER)  {
 
                         // data - phone number
-                        String key = circleItem.getTypeName();
+                        String key = circleItem.getDefaultTypeName();
 
                         String phoneNumber = data.getString("phone_number");
 
@@ -142,7 +153,7 @@ public class CirclesAdapter extends RecyclerView.Adapter<CirclesAdapter.CircleVi
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             if(circleItem.number != null) {
                 MenuItem miCall   = menu.add(Menu.NONE, 1, 1, "Call");
-                MenuItem miChange = menu.add(Menu.NONE, 1, 1, "Change number");
+
                 MenuItem miRemove = menu.add(Menu.NONE, 1, 1, "Remove number");
 
                 // User selected "Call"
@@ -156,18 +167,22 @@ public class CirclesAdapter extends RecyclerView.Adapter<CirclesAdapter.CircleVi
                     }
                 });
 
-                miChange.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        showDialogChangeNumber(circleItem);
-                        return true;
-                    }
-                });
+                if(circleItem.isDefault()) {
+                    MenuItem miChange = menu.add(Menu.NONE, 1, 1, "Change number");
+
+                    miChange.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            showDialogChangeNumber(circleItem);
+                            return true;
+                        }
+                    });
+                }
 
                 miRemove.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        settingsManager.remove(circleItem.getTypeName());
+                        settingsManager.remove(circleItem.getDefaultTypeName());
                         circleItem.number = null;
                         notifyDataSetChanged();
                         return true;

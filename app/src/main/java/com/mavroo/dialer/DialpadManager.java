@@ -231,7 +231,7 @@ class DialpadManager {
         return editTextDialpadCall.getText().toString();
     }
 
-    private void setDialNumber(String phoneNumber) {
+    public void setDialNumber(String phoneNumber) {
         editTextDialpadCall.setText(phoneNumber);
     }
 
@@ -277,7 +277,7 @@ class DialpadManager {
         setDialNumber(resetFormatting(getDialNumber()));
     }
 
-    private void previewNumber() {
+    public void previewNumber() {
         if (getDialNumber().equals(""))
             return;
 

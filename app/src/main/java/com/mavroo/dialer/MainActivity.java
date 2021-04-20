@@ -8,8 +8,10 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceFragment;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.AppCompatActivity;
@@ -83,18 +85,34 @@ public class MainActivity extends AppCompatActivity{
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         rvCircles.setLayoutManager(linearLayoutManager);
 
+        int resFace = R.drawable.image_placeholder_face;
         List<CircleItem> listCircles = new ArrayList<>();
+        listCircles.add(new CircleItem("Home", R.drawable.image_icon_house, -1, CirclesAdapter.DEFAULT_TYPE_HOME));
+        listCircles.add(new CircleItem("Taxi", R.drawable.image_icon_taxi, -1, CirclesAdapter.DEFAULT_TYPE_TAXI));
+        listCircles.add(new CircleItem("Restaurant", R.drawable.image_icon_restaurant, -1, CirclesAdapter.DEFAULT_TYPE_RESTAURANT));
+        listCircles.add(new CircleItem("Hotel", resFace, -1, CirclesAdapter.DEFAULT_TYPE_HOTEL));
 
-        listCircles.add(new CircleItem("Home", R.drawable.image_icon_house, CirclesAdapter.DEFAULT_TYPE_HOME));
-        listCircles.add(new CircleItem("Taxi", R.drawable.image_icon_taxi, CirclesAdapter.DEFAULT_TYPE_TAXI));
-        listCircles.add(new CircleItem("Restaurant", R.drawable.image_icon_restaurant, CirclesAdapter.DEFAULT_TYPE_RESTAURANT));
-        listCircles.add(new CircleItem("Hotel", R.drawable.image_placeholder_face, CirclesAdapter.DEFAULT_TYPE_HOTEL));
-        listCircles.add(new CircleItem("Burhan A,", R.drawable.image_placeholder_face));
-        listCircles.add(new CircleItem("Azer H.", R.drawable.image_placeholder_face));
+        Cursor cursorFavs = ContactHelper.getInstance().getFavourites(this);
 
-        for (int i = 0; i < 7; i++) {
-            listCircles.add(new CircleItem("[none]", R.drawable.image_placeholder_face));
+        if(cursorFavs.getCount() > 0) {
+            while (cursorFavs.moveToNext()) {
+                int id           = cursorFavs.getInt(cursorFavs.getColumnIndex(ContactsContract.Contacts._ID));
+                String key       = cursorFavs.getString(cursorFavs.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY));
+                String name      = cursorFavs.getString(cursorFavs.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                String photo     = cursorFavs.getString(cursorFavs.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
+                String hasNumber = cursorFavs.getString(cursorFavs.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+
+                CircleItem circleContact = new CircleItem(name, photo);
+                circleContact.type       = CircleItem.TYPE_CONTACT;
+                circleContact.contactKey = key;
+                circleContact.addContact(id);
+                listCircles.add(circleContact);
+            }
         }
+
+        /*for (int i = 0; i < 7; i++) {
+            listCircles.add(new CircleItem("[none]", R.drawable.image_placeholder_face));
+        }*/
 
         adapterCircles = new CirclesAdapter(this, getSupportFragmentManager(), listCircles);
         rvCircles.setAdapter(adapterCircles);

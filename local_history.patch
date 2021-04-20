@@ -1,0 +1,16 @@
+Index: app/src/main/java/com/example/dialer/CallLogCursorAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/dialer/CallLogCursorAdapter.java	(date 1527688032488)
++++ app/src/main/java/com/example/dialer/CallLogCursorAdapter.java	(date 1527688032488)
+@@ -80,7 +80,7 @@
+         {
+             while (contactCursor.moveToNext())
+             {
+-                String contactName = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
++                String contactName = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+                 String contactPhoto = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI));
+ 
+                 holder.numberTextView.setText(contactName);

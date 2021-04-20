@@ -1,0 +1,258 @@
+Index: app/src/main/java/com/mavroo/dialer/CallLogListFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.mavroo.dialer;\n\nimport android.app.Activity;\nimport android.app.Fragment;\nimport android.content.Context;\nimport android.content.Intent;\nimport android.database.Cursor;\nimport android.os.Bundle;\nimport android.support.annotation.Nullable;\nimport android.support.v7.widget.DefaultItemAnimator;\nimport android.support.v7.widget.LinearLayoutManager;\nimport android.support.v7.widget.RecyclerView;\nimport android.view.LayoutInflater;\nimport android.view.View;\nimport android.view.ViewGroup;\n\npublic class CallLogListFragment extends Fragment{\n\n    Activity mActivity;\n    RecyclerView callLogRecyclerView;\n    CallLogCursorAdapter callLogAdapter;\n    Cursor callLogsCursor;\n\n    @Nullable\n    @Override\n    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {\n        mActivity = getActivity();\n\n        View v = inflater.inflate(R.layout.fragment_call_log_list, container, false);\n\n        callLogRecyclerView = v.findViewById(R.id.recycler_view);\n        callLogsCursor = CallLogHelper.getCallLogs(mActivity, mActivity.getContentResolver());\n\n        if(!CallLogHelper.hasLogs(callLogsCursor))\n            return null;\n\n        RecyclerView.LayoutManager layoutManager =\n                new LinearLayoutManager(mActivity);\n        callLogRecyclerView.setLayoutManager(layoutManager);\n        callLogRecyclerView.setItemAnimator(new DefaultItemAnimator());\n\n        callLogAdapter = new CallLogCursorAdapter(mActivity, callLogsCursor);\n        //callLogRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));\n        callLogRecyclerView.setAdapter(callLogAdapter);\n        callLogAdapter.notifyDataSetChanged();\n\n        // scroll to the end\n        scrollToEnd();\n\n        return v;\n    }\n\n    private void scrollToEnd() {\n\n        if(!CallLogHelper.hasLogs(callLogsCursor))\n            return;\n\n         callLogRecyclerView.scrollToPosition(callLogsCursor.getCount() - 1);\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/mavroo/dialer/CallLogListFragment.java	(date 1531051606000)
++++ app/src/main/java/com/mavroo/dialer/CallLogListFragment.java	(date 1531056823066)
+@@ -1,12 +1,12 @@
+ package com.mavroo.dialer;
+ 
+ import android.app.Activity;
+-import android.app.Fragment;
+ import android.content.Context;
+ import android.content.Intent;
+ import android.database.Cursor;
+ import android.os.Bundle;
+ import android.support.annotation.Nullable;
++import android.support.v4.app.Fragment;
+ import android.support.v7.widget.DefaultItemAnimator;
+ import android.support.v7.widget.LinearLayoutManager;
+ import android.support.v7.widget.RecyclerView;
+@@ -14,7 +14,7 @@
+ import android.view.View;
+ import android.view.ViewGroup;
+ 
+-public class CallLogListFragment extends Fragment{
++public class CallLogListFragment extends Fragment {
+ 
+     Activity mActivity;
+     RecyclerView callLogRecyclerView;
+Index: app/src/main/java/com/mavroo/dialer/CallLogManager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.mavroo.dialer;\n\nimport android.app.Activity;\nimport android.app.FragmentTransaction;\nimport android.content.Context;\nimport android.database.Cursor;\nimport android.os.Bundle;\nimport android.support.v7.widget.DefaultItemAnimator;\nimport android.support.v7.widget.LinearLayoutManager;\nimport android.support.v7.widget.RecyclerView;\nimport android.util.Log;\n\npublic class CallLogManager {\n\n    private Context mContext;\n    private Activity mActivity;\n    private Cursor callLogsCursor;\n    private RecyclerView callLogRecyclerView;\n    private CallLogCursorAdapter callLogAdapter;\n    private CallLogListFragment callLogListFragment;\n    private CallLogNoResultFragment callLogNoResultFragment;\n\n    CallLogManager(Context context) {\n        mContext = context;\n        mActivity = (Activity) mContext;\n\n        loadCallLogs();\n    }\n\n    public void loadCallLogs() {\n        FragmentTransaction fragmentTransaction = mActivity.getFragmentManager()\n                .beginTransaction();\n\n        callLogsCursor = CallLogHelper.getCallLogs(mContext, mActivity.getContentResolver());\n\n        if(!hasLogs()) {\n            callLogNoResultFragment = new CallLogNoResultFragment();\n            fragmentTransaction.replace(R.id.layout_frame_call_log, callLogNoResultFragment);\n            fragmentTransaction.commit();\n\n            return;\n        }\n\n        callLogListFragment = new CallLogListFragment();\n        fragmentTransaction\n                .replace(R.id.layout_frame_call_log, callLogListFragment)\n                .commit();\n    }\n\n    private boolean hasLogs() {\n        return CallLogHelper.hasLogs(callLogsCursor);\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/mavroo/dialer/CallLogManager.java	(date 1531051606000)
++++ app/src/main/java/com/mavroo/dialer/CallLogManager.java	(date 1531057589013)
+@@ -1,10 +1,11 @@
+ package com.mavroo.dialer;
+ 
+ import android.app.Activity;
+-import android.app.FragmentTransaction;
+ import android.content.Context;
+ import android.database.Cursor;
+ import android.os.Bundle;
++import android.support.v4.app.FragmentManager;
++import android.support.v4.app.FragmentTransaction;
+ import android.support.v7.widget.DefaultItemAnimator;
+ import android.support.v7.widget.LinearLayoutManager;
+ import android.support.v7.widget.RecyclerView;
+@@ -19,32 +20,33 @@
+     private CallLogCursorAdapter callLogAdapter;
+     private CallLogListFragment callLogListFragment;
+     private CallLogNoResultFragment callLogNoResultFragment;
++    public FragmentManager mFragmentManager;
+ 
+-    CallLogManager(Context context) {
++    CallLogManager(Context context, FragmentManager fragmentManager) {
+         mContext = context;
+         mActivity = (Activity) mContext;
++        mFragmentManager = fragmentManager;
+ 
+         loadCallLogs();
+     }
+ 
+     public void loadCallLogs() {
+-        FragmentTransaction fragmentTransaction = mActivity.getFragmentManager()
+-                .beginTransaction();
++        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+ 
+         callLogsCursor = CallLogHelper.getCallLogs(mContext, mActivity.getContentResolver());
+ 
+         if(!hasLogs()) {
+             callLogNoResultFragment = new CallLogNoResultFragment();
+-            fragmentTransaction.replace(R.id.layout_frame_call_log, callLogNoResultFragment);
++            //fragmentTransaction.replace(R.id.layout_frame_call_log, callLogNoResultFragment);
+             fragmentTransaction.commit();
+ 
+             return;
+         }
+ 
+         callLogListFragment = new CallLogListFragment();
+-        fragmentTransaction
+-                .replace(R.id.layout_frame_call_log, callLogListFragment)
+-                .commit();
++        // fragmentTransaction
++        //         .replace(R.id.layout_frame_call_log, callLogListFragment)
++        //         .commit();
+     }
+ 
+     private boolean hasLogs() {
+Index: app/src/main/java/com/mavroo/dialer/CallLogNoResultFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.mavroo.dialer;\n\nimport android.app.Fragment;\nimport android.os.Bundle;\nimport android.support.annotation.Nullable;\nimport android.view.LayoutInflater;\nimport android.view.View;\nimport android.view.ViewGroup;\n\npublic class CallLogNoResultFragment extends Fragment{\n\n    @Nullable\n    @Override\n    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {\n        return inflater.inflate(R.layout.fragment_call_log_no_result, container, false);\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/mavroo/dialer/CallLogNoResultFragment.java	(date 1531051606000)
++++ app/src/main/java/com/mavroo/dialer/CallLogNoResultFragment.java	(date 1531057200890)
+@@ -1,13 +1,13 @@
+ package com.mavroo.dialer;
+ 
+-import android.app.Fragment;
+ import android.os.Bundle;
+ import android.support.annotation.Nullable;
++import android.support.v4.app.Fragment;
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
+ 
+-public class CallLogNoResultFragment extends Fragment{
++public class CallLogNoResultFragment extends Fragment {
+ 
+     @Nullable
+     @Override
+Index: app/src/main/java/com/mavroo/dialer/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.mavroo.dialer;\n\nimport android.animation.ArgbEvaluator;\nimport android.animation.ObjectAnimator;\nimport android.animation.PropertyValuesHolder;\nimport android.animation.ValueAnimator;\nimport android.content.Intent;\nimport android.database.Cursor;\nimport android.os.Build;\nimport android.support.design.widget.BottomSheetBehavior;\nimport android.support.v7.app.AppCompatActivity;\nimport android.os.Bundle;\nimport android.support.v7.widget.RecyclerView;\nimport android.telecom.TelecomManager;\nimport android.view.View;\nimport android.widget.Button;\nimport android.widget.EditText;\nimport android.widget.LinearLayout;\nimport android.widget.Toast;\n\n//import com.terrakok.phonematter.PhoneFormat;\n\npublic class MainActivity extends AppCompatActivity{\n\n    private static final String DEBUG_TAG = \"MYAPP\";\n    private static final int CODE_REQUEST_SET_DEFAULT_DIALER = 1;\n\n    EditText editTextDialPadCall;\n    CallManager callManager;\n    CallLogManager callLogManager;\n    DialpadManager dialpadManager;\n    CallLogHelper callLogHelper;\n    StringManager stringManager;\n    RecyclerView callLogRecyclerView;\n    CallLogCursorAdapter callLogAdapter;\n    Cursor callLogsCursor;\n\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        //getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);\n        setContentView(com.mavroo.dialer.R.layout.activity_main);\n\n        editTextDialPadCall = findViewById(com.mavroo.dialer.R.id.dial_pad_call);\n        dialpadManager = new DialpadManager(this);\n        callLogManager = new CallLogManager(this);\n\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {\n            // DeviceHelper.setLightNavigationBar(this);\n        }\n\n        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {\n            setDefault();\n//            DeviceHelper.setLightStatusBar(this);\n        }\n\n        callManager = CallManager.getInstance();\n        callLogHelper = CallLogHelper.getInstance();\n        stringManager = StringManager.getInstance();\n    }\n\n    @Override\n    public void onBackPressed() {\n        switch (dialpadManager.getDialpadSheet().getState()) {\n            case BottomSheetBehavior.STATE_EXPANDED:\n                dialpadManager.closeDialpad();\n                break;\n\n            default:\n                super.onBackPressed();\n                break;\n        }\n    }\n\n    public void onClickEditTextDialNum(View view) {\n        dialpadManager.openDialpad();\n    }\n\n    public void onClickDialNum(View view) {\n        Button b = (Button) view;\n\n        /*Animation animation;\n        animation = AnimationUtils.loadAnimation(this, R.anim.click_dial_num);\n        animation.setFillAfter(true);\n        b.startAnimation(animation);*/\n\n        animateButtonDialNum(b);\n        animateButtonCall();\n\n        dialpadManager.addNum(b.getText().toString());\n    }\n\n    private void animateButtonDialNum(Button b) {\n        final int colorFrom = getResources().getColor(android.R.color.black);\n        final int colorTo = getResources().getColor(R.color.colorOne);\n        PropertyValuesHolder valuesTextSizeStart = PropertyValuesHolder.ofFloat(\"textSize\", 40, 20);\n        PropertyValuesHolder valuesTextColorStart = PropertyValuesHolder.ofObject(\"textColor\", new ArgbEvaluator(), colorFrom, colorTo);\n\n        PropertyValuesHolder valuesTextSizeEnd = PropertyValuesHolder.ofFloat(\"textSize\", 20, 35);\n        PropertyValuesHolder valuesTextColorEnd = PropertyValuesHolder.ofObject(\"textColor\", new ArgbEvaluator(), colorTo, colorFrom);\n\n        ValueAnimator animator1 = ObjectAnimator.ofPropertyValuesHolder(b, valuesTextSizeStart, valuesTextColorStart);\n        animator1.setDuration(170);\n        animator1.start();\n\n        ValueAnimator animator2 = ObjectAnimator.ofPropertyValuesHolder(b, valuesTextSizeEnd, valuesTextColorEnd);\n        animator2.setDuration(250);\n        animator2.start();\n    }\n\n    private void animateButtonCall() {\n        LinearLayout dialCallButton = findViewById(R.id.dial_call);\n        AnimationHelper.animateJump(this, dialCallButton);\n    }\n\n    public void onCall(View view) {\n        dialpadManager.makeCall(null);\n    }\n\n    public void onAction(View view) {\n        dialpadManager.openDialpad();\n    }\n\n    @Override\n    protected void onResume() {\n        super.onResume();\n\n        callLogManager.loadCallLogs();\n    }\n\n    private void setDefault() {\n        if(isDefault())\n            return;\n\n        final Intent intent = new Intent(TelecomManager.ACTION_CHANGE_DEFAULT_DIALER);\n        intent.putExtra(TelecomManager.EXTRA_CHANGE_DEFAULT_DIALER_PACKAGE_NAME, getPackageName());\n        startActivityForResult(intent, CODE_REQUEST_SET_DEFAULT_DIALER);\n    }\n\n    private boolean isDefault() {\n        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)\n            return true;\n\n        TelecomManager telecomManager = (TelecomManager) getSystemService(TELECOM_SERVICE);\n        String defaultApp = null;\n        if (telecomManager != null) {\n            defaultApp = telecomManager.getDefaultDialerPackage();\n        }\n\n        return getPackageName().equals(defaultApp);\n    }\n\n    @Override\n    protected void onActivityResult(int requestCode, int resultCode, Intent data) {\n        if (requestCode == CODE_REQUEST_SET_DEFAULT_DIALER) {\n            if (resultCode == RESULT_OK) {\n                showToast(\"User accepted request to become default dialer\");\n            } else if (resultCode == RESULT_CANCELED) {\n                showToast(\"User declined request to become default dialer\");\n            }\n        }\n    }\n\n    private void showToast(String message) {\n        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();\n    }\n\n    public void onClear(View view) {\n        dialpadManager.clearDialNumber();\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/mavroo/dialer/MainActivity.java	(date 1531051606000)
++++ app/src/main/java/com/mavroo/dialer/MainActivity.java	(date 1531059526435)
+@@ -8,6 +8,9 @@
+ import android.database.Cursor;
+ import android.os.Build;
+ import android.support.design.widget.BottomSheetBehavior;
++import android.support.design.widget.TabLayout;
++import android.support.v4.app.FragmentManager;
++import android.support.v4.view.ViewPager;
+ import android.support.v7.app.AppCompatActivity;
+ import android.os.Bundle;
+ import android.support.v7.widget.RecyclerView;
+@@ -43,7 +46,7 @@
+ 
+         editTextDialPadCall = findViewById(com.mavroo.dialer.R.id.dial_pad_call);
+         dialpadManager = new DialpadManager(this);
+-        callLogManager = new CallLogManager(this);
++        callLogManager = new CallLogManager(this, getSupportFragmentManager());
+ 
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+             // DeviceHelper.setLightNavigationBar(this);
+@@ -57,6 +60,18 @@
+         callManager = CallManager.getInstance();
+         callLogHelper = CallLogHelper.getInstance();
+         stringManager = StringManager.getInstance();
++
++        ViewPager viewPager = findViewById(R.id.main_container);
++        setupViewPager(viewPager);
++
++        TabLayout tabLayout = findViewById(R.id.main_layout_tab);
++        tabLayout.setupWithViewPager(viewPager);
++    }
++
++    public void setupViewPager(ViewPager viewPager) {
++        TabsFragmentPagerAdapter adapter = new TabsFragmentPagerAdapter(getSupportFragmentManager());
++        adapter.addFragment(new CallLogListFragment(), "Calls");
++        viewPager.setAdapter(adapter);
+     }
+ 
+     @Override
+Index: app/src/main/java/com/mavroo/dialer/TabsFragmentPagerAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/mavroo/dialer/TabsFragmentPagerAdapter.java	(date 1531056603061)
++++ app/src/main/java/com/mavroo/dialer/TabsFragmentPagerAdapter.java	(date 1531056603061)
+@@ -0,0 +1,40 @@
++package com.mavroo.dialer;
++
++import android.support.annotation.Nullable;
++import android.support.v4.app.Fragment;
++import android.support.v4.app.FragmentManager;
++import android.support.v4.app.FragmentPagerAdapter;
++
++import java.util.ArrayList;
++import java.util.List;
++
++public class TabsFragmentPagerAdapter extends FragmentPagerAdapter {
++
++    private List<Fragment> listFragment = new ArrayList<>();
++    private List<String>   listFragmentTitle = new ArrayList<>();
++
++    public TabsFragmentPagerAdapter(FragmentManager fm) {
++        super(fm);
++    }
++
++    public void addFragment(Fragment fragment, String title) {
++        listFragment.add(fragment);
++        listFragmentTitle.add(title);
++    }
++
++    @Nullable
++    @Override
++    public CharSequence getPageTitle(int position) {
++        return listFragmentTitle.get(position);
++    }
++
++    @Override
++    public Fragment getItem(int position) {
++        return listFragment.get(position);
++    }
++
++    @Override
++    public int getCount() {
++        return listFragment.size();
++    }
++}
+Index: app/src/main/res/layout/activity_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n\n<android.support.design.widget.CoordinatorLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\n    xmlns:tools=\"http://schemas.android.com/tools\"\n    android:layout_width=\"match_parent\"\n    android:layout_height=\"match_parent\"\n    android:background=\"@color/colorBackgroundLight\"\n    tools:context=\"com.mavroo.dialer.MainActivity\">\n\n    <FrameLayout\n        android:id=\"@+id/layout_frame_call_log\"\n        android:layout_width=\"match_parent\"\n        android:layout_height=\"match_parent\" />\n\n    <!-- include bottom sheet -->\n    <include layout=\"@layout/dial_bottom_sheet\" />\n\n</android.support.design.widget.CoordinatorLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_main.xml	(date 1531051606000)
++++ app/src/main/res/layout/activity_main.xml	(date 1531060026088)
+@@ -8,10 +8,30 @@
+     android:background="@color/colorBackgroundLight"
+     tools:context="com.mavroo.dialer.MainActivity">
+ 
+-    <FrameLayout
+-        android:id="@+id/layout_frame_call_log"
++    <android.support.design.widget.AppBarLayout
+         android:layout_width="match_parent"
+-        android:layout_height="match_parent" />
++        android:layout_height="wrap_content">
++        <Toolbar
++            android:layout_width="match_parent"
++            android:layout_height="?attr/actionBarSize">
++
++        </Toolbar>
++
++        <android.support.design.widget.TabLayout
++            android:visibility="gone"
++            android:id="@+id/main_layout_tab"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:background="@android:color/white"
++            android:fillViewport="true"
++            app:tabGravity="fill"/>
++    </android.support.design.widget.AppBarLayout>
++
++    <android.support.v4.view.ViewPager
++        android:id="@+id/main_container"
++        android:layout_width="match_parent"
++        android:layout_height="match_parent"
++        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+ 
+     <!-- include bottom sheet -->
+     <include layout="@layout/dial_bottom_sheet" />
